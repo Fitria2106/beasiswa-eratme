@@ -24,6 +24,10 @@ return new class extends Migration
             $table->string('foto_barang')->nullable();
             $table->string('status')->default('pending');
             $table->text('alasan_penolakan')->nullable();
+            $table->string('role')->default('mahasiswa');
+            $table->string('nim')->unique();
+            $table->string('jurusan');
+            $table->string('kampus');
             $table->timestamps();
         });
     }

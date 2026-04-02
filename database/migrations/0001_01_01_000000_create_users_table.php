@@ -15,12 +15,16 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('role')->default('mahasiswa'); // Masukkan di sini
+            $table->string('nim')->unique();              // Masukkan di sini
+            $table->string('kampus');                     // Masukkan di sini
+            $table->string('jurusan');                    // Masukkan di sini
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
         });
-
+    }
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
             $table->string('token');
