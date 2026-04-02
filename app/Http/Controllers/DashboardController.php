@@ -11,33 +11,34 @@ class DashboardController extends Controller
 {
     /**
      * 1. Dashboard untuk Admin
-     * Menampilkan semua laporan dan ringkasan dana
      */
-    public function admin()
+    public function admin() 
     {
-        $all_reports = Report::with('user')->latest()->get();
-        $totalPengeluaran = Report::sum('harga');
-        $totalBuku = Report::where('jenis_laporan', 'buku')->sum('harga');
-        $totalATK = Report::where('jenis_laporan', 'barang_penunjang')->sum('harga');
-        $jumlahLaporan = $all_reports->count();
+        $user = Auth::user();
 
-        return view('admin.dashboard', compact(
-            'all_reports', 'totalPengeluaran', 'totalBuku', 'totalATK', 'jumlahLaporan'
-        ));
+        // Pastikan pengecekan role sudah benar (huruf kecil semua)
+        if ($user->role === 'admin') {
+            // Ambil SEMUA laporan dan sertakan data user-nya (Eager Loading)
+            $allReports = Report::with('user')->orderBy('created_at', 'desc')->get();
+
+            // CEK DI SINI: Kirim variabel $allReports ke view
+            return view('admin.dashboard', compact('allReports'));
+        }
+
+        return redirect()->route('mahasiswa.dashboard');
     }
 
     /**
      * 2. Dashboard untuk Mahasiswa
-     * Menampilkan laporan milik mahasiswa yang sedang login saja
      */
     public function mahasiswa()
     {
-        // Mengambil semua laporan milik user yang login, diurutkan dari yang terbaru
-        $reports = Report::where('user_id', Auth::id())
-                        ->orderBy('created_at', 'desc')
-                        ->get();
+        // 1. Ambil data user yang sedang login
+        $user = Auth::user();
 
-        // Mengirim variabel $reports ke view dashboard
+        // 2. Ambil laporan milik mahasiswa ini saja
+        $reports = Report::where('user_id', $user->id)->orderBy('created_at', 'desc')->get();
+        
         return view('mahasiswa.dashboard', compact('reports'));
     }
 
