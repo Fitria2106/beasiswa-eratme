@@ -6,35 +6,25 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Spublic function up(): void
-{
-    Schema::create('reports', function (Blueprint $table) {
+        Schema::create('reports', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('jenis_laporan'); // Misal: Buku atau ATK
+            $table->string('jenis_laporan');
             $table->string('semester');
             $table->string('nama_item');
-            $table->text('ringkasan_buku')->nullable(); // Pakai nullable jika ATK tidak butuh ringkasan
+            $table->text('ringkasan_buku')->nullable();
             $table->text('keterangan')->nullable();
             $table->integer('harga');
             $table->string('foto_nota')->nullable();
             $table->string('foto_barang')->nullable();
-            $table->string('status')->default('pending'); // default status
+            $table->string('status')->default('pending');
             $table->text('alasan_penolakan')->nullable();
             $table->timestamps();
-        });
+        }); // <-- PASTIKAN ADA TUTUP KURUNG DAN TITIK KOMA DI SINI
     }
 
-    }
-
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('reports');
