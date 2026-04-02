@@ -14,12 +14,13 @@ class DatabaseSeeder extends Seeder
      * Seed the application's database.
      */
     public function run(): void
-    {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
-    }
+{
+    \App\Models\User::create([
+        'name' => 'KbfAdmin',
+        'email' => 'admin@eratme.com', // Ganti dengan email kamu
+        'password' => Hash::make('password123'), // Ganti password yang kuat
+        'role' => 'admin',
+        'nim' => '000000', // Admin tetap butuh isi kolom NIM jika di migrasi kamu 'required'
+    ]);
+}
 }
