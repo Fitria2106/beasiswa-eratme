@@ -11,15 +11,25 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('reports', function (Blueprint $table) {
+        Spublic function up(): void
+{
+    Schema::create('reports', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('nama_buku');
+            $table->string('jenis_laporan'); // Misal: Buku atau ATK
+            $table->string('semester');
+            $table->string('nama_item');
+            $table->text('ringkasan_buku')->nullable(); // Pakai nullable jika ATK tidak butuh ringkasan
+            $table->text('keterangan')->nullable();
             $table->integer('harga');
-            $table->text('ringkasan_buku'); // Kolom yang tadi kita bahas ada di sini
-            $table->string('foto_struk')->nullable(); // Tambahan jika butuh upload foto
+            $table->string('foto_nota')->nullable();
+            $table->string('foto_barang')->nullable();
+            $table->string('status')->default('pending'); // default status
+            $table->text('alasan_penolakan')->nullable();
             $table->timestamps();
         });
+    }
+
     }
 
     /**
