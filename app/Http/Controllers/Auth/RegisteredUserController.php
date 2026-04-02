@@ -39,16 +39,15 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $user = User::create([
+            $user = User::create([
             'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => 'mahasiswa', // WAJIB ADA INI
             'nim' => $request->nim,
             'kampus' => $request->kampus,
             'jurusan' => $request->jurusan,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => 'mahasiswa',
         ]);
-
         event(new Registered($user));
 
         Auth::login($user);

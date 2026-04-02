@@ -27,8 +27,8 @@
         
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800 fw-bold">Verifikasi Laporan Beasiswa</h1>
-            <a href="{{ route('admin.cetak') }}" class="btn btn-sm btn-primary shadow-sm px-3 rounded-pill">
-                🖨️ Cetak PDF Laporan
+            <a href="{{ route('admin.cetak_pdf') }}" class="btn btn-danger"> 🖨️ Cetak PDF Laporan</a>
+               
             </a>
         </div>
 

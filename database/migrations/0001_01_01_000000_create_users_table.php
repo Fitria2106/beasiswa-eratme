@@ -15,21 +15,21 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('role')->default('mahasiswa'); // Masukkan di sini
-            $table->string('nim')->unique();              // Masukkan di sini
-            $table->string('kampus');                     // Masukkan di sini
-            $table->string('jurusan');                    // Masukkan di sini
+            $table->string('role')->default('mahasiswa');
+            $table->string('nim')->unique();
+            $table->string('kampus');
+            $table->string('jurusan');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
-        });
-    }
+        }); // Ini penutup Schema users (Benar)
+
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
             $table->string('token');
             $table->timestamp('created_at')->nullable();
-        });
+        }); // Ini penutup Schema password (Benar)
 
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();
@@ -38,8 +38,8 @@ return new class extends Migration
             $table->text('user_agent')->nullable();
             $table->longText('payload');
             $table->integer('last_activity')->index();
-        });
-    }
+        }); // Ini penutup Schema sessions (Benar)
+    } // <--- BARIS INI HARUS ADA DI SINI UNTUK MENUTUP FUNGSI UP
 
     /**
      * Reverse the migrations.
