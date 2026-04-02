@@ -9,9 +9,7 @@ use App\Models\Report;
 
 class ReportController extends Controller
 {
-    /**
-     * Menyimpan laporan baru
-     */
+    // 1. Simpan Laporan Baru
     public function store(Request $request)
     {
         $request->validate([
@@ -44,9 +42,7 @@ class ReportController extends Controller
         return redirect()->route('mahasiswa.dashboard')->with('success', 'Laporan Beasiswa Berhasil Dikirim!');
     }
 
-    /**
-     * Menampilkan form edit
-     */
+    // 2. Form Edit
     public function edit($id)
     {
         $report = Report::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
@@ -58,34 +54,26 @@ class ReportController extends Controller
         return view('mahasiswa.edit', compact('report'));
     }
 
-    /**
-     * Memperbarui laporan (Update)
-     */
+    // 3. Update Laporan
     public function update(Request $request, $id)
     {
+        // 1. Cari data (Pastikan hanya milik mahasiswa yang login)
         $report = Report::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
 
-        // 1. Validasi dulu semua data yang masuk
+        // 2. Validasi (Jika gagal, layar tidak akan pindah dan muncul pesan merah)
         $request->validate([
-            'semester'      => 'required|integer|between:4,8',
-            'nama_item'     => 'required|string|max:255',
-            'ringkasan_buku'=> 'nullable|string',
-            'keterangan'    => 'nullable|string',
-            'harga'         => 'required|numeric',
-            'foto_nota'     => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'foto_barang'   => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'nama_item' => 'required|string|max:255',
+            'harga'     => 'required|numeric',
+            'foto_nota' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'foto_barang' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        // 2. Isi data ke objek model
-        $report->semester       = $request->semester;
-        $report->nama_item       = $request->nama_item;
-        $report->ringkasan_buku = $request->ringkasan_buku; // Masukkan ke sini
-        $report->keterangan     = $request->keterangan;     // Masukkan ke sini
-        $report->harga          = $request->harga;
-        $report->status         = 'pending'; // Reset status jadi pending jika diedit
-        $report->alasan_penolakan = null;
+        // 3. Update data teks
+        $report->nama_item = $request->nama_item;
+        $report->harga = $request->harga;
+        $report->status = 'pending'; // Reset status supaya admin cek ulang
 
-        // 3. Proses upload file jika ada file baru
+        // 4. Update foto (Hanya jika ada file baru yang diunggah)
         if ($request->hasFile('foto_nota')) {
             if ($report->foto_nota) { Storage::disk('public')->delete($report->foto_nota); }
             $report->foto_nota = $request->file('foto_nota')->store('notas', 'public');
@@ -96,15 +84,13 @@ class ReportController extends Controller
             $report->foto_barang = $request->file('foto_barang')->store('barangs', 'public');
         }
 
-        // 4. Simpan perubahan
-        $report->save();
+        // 5. INI BAGIAN PALING PENTING! JANGAN SAMPAI LEWAT
+        $report->save(); 
 
-        return redirect()->route('mahasiswa.dashboard')->with('success', 'Laporan berhasil diperbarui.');
+        // 6. Pindah layar kembali ke dashboard
+        return redirect()->route('mahasiswa.dashboard')->with('success', 'Laporan berhasil diperbarui!');
     }
-
-    /**
-     * Menghapus laporan (Destroy)
-     */
+    // 4. Hapus Laporan
     public function destroy($id)
     {
         $report = Report::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
