@@ -1,84 +1,178 @@
 <x-app-layout>
-    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm py-3 mb-4" style="background: linear-gradient(45deg, #4e73df, #224abe);">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="#"><i class="bi bi-mortarboard-fill me-2"></i> Eratme Mahasiswa</a>
-            <div class="dropdown ms-auto">
-                <a class="d-flex align-items-center text-decoration-none dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
-                    <div class="bg-white text-primary rounded-circle d-flex align-items-center justify-content-center fw-bold me-2" style="width: 35px; height: 35px;">{{ substr(Auth::user()->name, 0, 1) }}</div>
-                    <span class="small d-none d-md-inline">{{ Auth::user()->name }}</span>
+    <style>
+        /* 1. SEMBUNYIKAN NAVBAR BAWAAN LARAVEL (AGAR TIDAK DOUBLE/TUMPUK) */
+        nav.bg-white, nav.border-b, .bg-gray-800, nav[x-data], .navbar-dark { 
+            display: none !important; 
+        }
+
+        /* 2. PENYESUAIAN BODY */
+        body { background-color: #f4f7fe; font-family: 'Inter', sans-serif; }
+        
+        /* 3. SIDEBAR (NAVIGASI SAMPING MAHASISWA) */
+        .sidebar { 
+            width: 260px; height: 100vh; background: white; position: fixed; 
+            border-right: 1px solid #e3e6f0; transition: 0.3s; z-index: 1000; 
+        }
+        .nav-link-custom { 
+            padding: 15px 25px; color: #4e73df; font-weight: 600; display: flex; 
+            align-items: center; text-decoration: none; border-radius: 12px; 
+            margin: 8px 15px; transition: 0.3s; 
+        }
+        .nav-link-custom:hover, .nav-link-custom.active { 
+            background: linear-gradient(45deg, #4e73df, #224abe); color: white !important; 
+            box-shadow: 0 4px 12px rgba(78, 115, 223, 0.2);
+        }
+        
+        /* 4. KONTEN UTAMA (DIBERI MARGIN KIRI AGAR TIDAK TERTUTUP SIDEBAR) */
+        .main-content { margin-left: 260px; padding: 40px; transition: 0.3s; min-height: 100vh; }
+
+        /* 5. CARD STYLING */
+        .glass-card { 
+            background: white; border-radius: 25px; border: none; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03); 
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { margin-left: -260px; }
+            .main-content { margin-left: 0; padding: 20px; }
+        }
+    </style>
+
+    <div class="sidebar no-print">
+        <div class="p-4 border-bottom text-center">
+            <i class="bi bi-mortarboard-fill text-primary display-6"></i>
+            <div class="mt-2">
+                <h6 class="fw-bold mb-0 text-dark" style="letter-spacing: 1px;">ERATME</h6>
+                <small class="text-primary fw-bold" style="font-size: 10px;">SCHOLARSHIP</small>
+            </div>
+        </div>
+        <div class="mt-4">
+            <a href="#" class="nav-link-custom active"><i class="bi bi-grid-1x2-fill me-3"></i> Dashboard Utama</a>
+            <a href="{{ url('/upload') }}" class="nav-link-custom"><i class="bi bi-file-earmark-arrow-up-fill me-3"></i> Upload Laporan</a>
+            <a href="{{ route('profile.edit') }}" class="nav-link-custom"><i class="bi bi-person-bounding-box me-3"></i> Profil Saya</a>
+            <hr class="mx-4 opacity-25">
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="nav-link-custom text-danger border-0 bg-transparent w-100 text-start">
+                    <i class="bi bi-box-arrow-right me-3"></i> Keluar
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="main-content">
+        
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <div>
+                <h2 class="fw-bold text-dark mb-0">Dashboard Utama</h2>
+                <p class="text-muted small">E-Report Beasiswa Eratme • KBF Indonesia
+            </div>
+            <div class="d-flex align-items-center bg-white p-2 rounded-4 shadow-sm px-3 border">
+                <div class="text-end me-3">
+                    <p class="mb-0 fw-bold small text-dark">{{ Auth::user()->name }}</p>
+                    <p class="mb-0 text-muted small" style="font-size: 10px;">NIM: {{ Auth::user()->nim }}</p>
+                </div>
+                <div class="bg-primary text-white rounded-3 d-flex align-items-center justify-content-center shadow-sm" style="width: 40px; height: 40px; font-weight: bold;">
+                    {{ substr(Auth::user()->name, 0, 1) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-5">
+            <div class="col-lg-6">
+                <div class="card glass-card p-4 h-100 border-0 shadow-sm text-white" style="background: linear-gradient(135deg, #4e73df, #224abe);">
+                    <h3 class="fw-bold">Selamat Datang! ✨</h3>
+                    <p class="opacity-75 mb-0">Mahasiswa Aktif Semester 7</p>
+                    <div class="mt-4 pt-2 border-top border-white border-opacity-25">
+                        <small>Akun: <strong>{{ Auth::user()->email }}</strong></small>
+                    </div>
+                </div>
+            </div>
+           <div class="row g-4 mb-5">
+    <div class="col-lg-4">
+        <div class="card glass-card p-4 h-100 border-0 shadow-sm bg-white border-start border-primary border-5">
+            <small class="text-muted fw-bold">SISA SALDO SAYA</small>
+            <h3 class="fw-bold text-dark mt-2">Rp {{ number_format(1500000 - $reports->where('status', 'disetujui')->sum('harga'), 0, ',', '.') }}</h3>
+            <span class="badge bg-primary-subtle text-primary mt-2">Jatah Semester Ini</span>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card glass-card p-4 h-100 border-0 shadow-sm bg-white">
+            <small class="text-muted fw-bold">TOTAL BUKU DIBELI</small>
+            <h3 class="fw-bold text-success mt-2">{{ $reports->where('jenis_laporan', 'buku')->count() }} Eksamplar</h3>
+            <span class="badge bg-success-subtle text-success mt-2">Koleksi Akademik</span>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card glass-card p-4 h-100 border-0 shadow-sm bg-white">
+            <small class="text-muted fw-bold">TOTAL ITEM ATK</small>
+            <h3 class="fw-bold text-warning mt-2">{{ $reports->where('jenis_laporan', 'barang_penunjang')->count() }} Item</h3>
+            <span class="badge bg-warning-subtle text-warning mt-2">Penunjang Kuliah</span>
+        </div>
+    </div>
+</div>
+
+        <div class="card glass-card overflow-hidden">
+            <div class="card-header bg-white py-4 px-4 d-flex justify-content-between align-items-center border-0">
+                <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-clock-history me-2 text-primary"></i>Riwayat Pengajuan Laporan</h5>
+                <a href="{{ url('/upload') }}" class="btn btn-primary rounded-pill px-4 shadow-sm fw-bold">
+                    <i class="bi bi-plus-lg me-2"></i>Tambah Baru
                 </a>
-                <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
-                    <li><a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="bi bi-person me-2 text-primary"></i> Lihat Profil</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li>
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit" class="dropdown-item text-danger"><i class="bi bi-power me-2"></i> Keluar</button>
-                        </form>
-                    </li>
-                </ul>
             </div>
-        </div>
-    </nav>
-
-    <div class="container pb-5">
-        <div class="row g-4 mb-4">
-            <div class="col-md-8">
-                <div class="card shadow-sm border-0 p-4 text-white" style="background: linear-gradient(45deg, #4e73df, #224abe); border-radius: 20px;">
-                    <h5 class="opacity-75 small">Selamat Datang,</h5>
-                    <h2 class="fw-bold">{{ Auth::user()->name }}</h2>
-                    <p class="mb-0 small opacity-75 italic">Mahasiswa Aktif Fakultas Teknologi Informasi</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card shadow-sm border-0 border-start border-warning border-5 p-4 h-100 bg-white" style="border-radius: 20px;">
-                    <h6 class="text-muted small fw-bold uppercase">Sisa Saldo Beasiswa</h6>
-                    <h2 class="fw-bold text-dark mt-2">Rp {{ number_format(1500000 - $reports->sum('harga'), 0, ',', '.') }}</h2>
-                    <p class="small text-muted mb-0">Total Jatah: Rp 1.500.000</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="card shadow-sm border-0 rounded-4 overflow-hidden mt-4">
-            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-0">
-                <h5 class="fw-bold mb-0 text-dark">Riwayat Laporan Saya</h5>
-                <a href="{{ url('/upload') }}" class="btn btn-primary btn-sm rounded-pill px-4 shadow-sm">+ Tambah Baru</a>
-            </div>
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0 text-center">
+            <div class="table-responsive px-4 pb-4">
+                <table class="table table-hover align-middle mb-0">
                     <thead class="table-light">
                         <tr>
-                            <th class="py-3">Tanggal</th>
-                            <th class="text-start">Nama Barang</th>
-                            <th>Harga</th>
-                            <th>Status</th>
-                            <th>Aksi</th>
+                            <th class="py-3 px-3">Tanggal</th>
+                            <th>Item & Jenis</th>
+                            <th>Nominal</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-end">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($reports as $report)
+                        @forelse($reports as $report)
                         <tr>
-                            <td class="text-muted small">{{ $report->created_at->format('d/m/Y') }}</td>
-                            <td class="text-start fw-bold">{{ $report->nama_item }}</td>
-                            <td class="fw-bold">Rp{{ number_format($report->harga, 0, ',', '.') }}</td>
+                            <td class="small px-3 text-muted">{{ $report->created_at->format('d M Y') }}</td>
                             <td>
-                                <span class="badge rounded-pill px-3 {{ $report->status == 'disetujui' ? 'bg-success' : ($report->status == 'ditolak' ? 'bg-danger' : 'bg-secondary') }}">
-                                    {{ strtoupper($report->status ?? 'PENDING') }}
-                                </span>
+                                <div class="fw-bold text-dark">{{ $report->nama_item }}</div>
+                                <span class="badge bg-light text-primary border border-primary-subtle" style="font-size: 10px;">{{ strtoupper($report->jenis_laporan) }}</span>
                             </td>
-                            <td>
-                                @if($report->status != 'disetujui')
-                                    <a href="{{ route('mahasiswa.edit', $report->id) }}" class="btn btn-sm btn-outline-primary border-0"><i class="bi bi-pencil-square"></i></a>
+                            <td class="fw-bold text-dark">Rp {{ number_format($report->harga, 0, ',', '.') }}</td>
+                            <td class="text-center">
+                                @if($report->status == 'disetujui')
+                                    <span class="badge bg-success-subtle text-success rounded-pill px-3 py-2">DISETUJUI</span>
+                                @elseif($report->status == 'ditolak')
+                                    <span class="badge bg-danger-subtle text-danger rounded-pill px-3 py-2">DITOLAK</span>
                                 @else
-                                    <i class="bi bi-lock-fill text-muted"></i>
+                                    <span class="badge bg-secondary-subtle text-secondary rounded-pill px-3 py-2">PENDING</span>
+                                @endif
+                            </td>
+                            <td class="text-end">
+                                @if($report->status != 'disetujui')
+                                    <a href="{{ route('mahasiswa.edit', $report->id) }}" class="btn btn-sm btn-light border rounded-circle shadow-sm">
+                                        <i class="bi bi-pencil-square text-primary"></i>
+                                    </a>
+                                @else
+                                    <span class="badge bg-light text-muted border px-2 py-2"><i class="bi bi-lock-fill"></i></span>
                                 @endif
                             </td>
                         </tr>
-                        @endforeach
+                        @empty
+                        <tr>
+                            <td colspan="5" class="text-center py-5 text-muted">
+                                <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                Belum ada laporan pengajuan.
+                            </td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </x-app-layout>
