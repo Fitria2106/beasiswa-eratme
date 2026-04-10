@@ -93,17 +93,15 @@ class ReportController extends Controller
     // 4. Hapus Laporan
     public function destroy($id)
     {
-        $report = Report::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+        public function destroyAdmin($id)
+        {
+            // Temukan laporan berdasarkan ID
+           $report = \App\Models\Report::findOrFail($id);
+            
+            // Hapus laporan dari database
+            $report->delete();
 
-        if ($report->status === 'disetujui') {
-            return redirect()->route('mahasiswa.dashboard')->with('error', 'Laporan yang sudah disetujui tidak dapat dihapus.');
+            // Kembali ke halaman sebelumnya dengan pesan sukses
+           eturn redirect()->back()->with('success', 'Laporan berhasil dihapus oleh Admin.');
         }
-
-        if ($report->foto_nota) { Storage::disk('public')->delete($report->foto_nota); }
-        if ($report->foto_barang) { Storage::disk('public')->delete($report->foto_barang); }
-
-        $report->delete();
-
-        return redirect()->route('mahasiswa.dashboard')->with('success', 'Laporan berhasil dihapus.');
     }
-}

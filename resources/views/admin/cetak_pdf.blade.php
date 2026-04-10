@@ -28,7 +28,7 @@
 
     <td width="15%" align="left">
          {{-- Logo Eratme --}}
-         <img src="{{ public_path('images/logo-eratme.jpg') }}" style="height: 50px;">
+        <img src="{{ asset('images/logo-eratme.png') }}" alt="Logo Eratme">
     </td>
         <tr>
             <td class="header-text">

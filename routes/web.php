@@ -49,4 +49,8 @@ Route::get('/dashboard', function () {
         : redirect()->route('mahasiswa.dashboard');
 })->middleware(['auth'])->name('dashboard');
 
+
+// Route hapus laporan khusus admin
+// Tambahkan baris ini
+Route::delete('/admin/reports/{id}', [ReportController::class, 'destroyAdmin'])->name('admin.report.destroy');
 require __DIR__.'/auth.php';

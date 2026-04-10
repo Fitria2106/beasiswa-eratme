@@ -1,65 +1,142 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight italic">
-            {{ __('Perbaiki Laporan: ') }} {{ $report->nama_item }}
-        </h2>
-    </x-slot>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 
-    <div class="py-12">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-xl p-8 border-t-4 border-indigo-500">
+    <style>
+        /* Sembunyikan navbar bawaan agar tidak double */
+        nav.bg-white, nav.border-b, .bg-gray-800, nav[x-data] { display: none !important; }
+
+        body { background-color: #f4f7fe; font-family: 'Inter', sans-serif; }
+        
+        .card-edit { border-radius: 25px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+
+        /* TOMBOL SIMPAN DENGAN EFEK KLIK KUAT */
+        .btn-update {
+            background: linear-gradient(45deg, #4e73df, #224abe);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 25px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .btn-update:hover {
+            background: linear-gradient(45deg, #224abe, #1a3b99);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(78, 115, 223, 0.3);
+            color: white;
+        }
+
+        /* Efek saat diklik (Active State) */
+        .btn-update:active {
+            background: #1a3b99 !important;
+            transform: translateY(2px) !important; /* Terlihat tertekan ke bawah */
+            box-shadow: inset 0 3px 5px rgba(0,0,0,0.2) !important; /* Bayangan di dalam */
+            transition: 0.05s;
+        }
+
+        .btn-cancel {
+            background-color: #f8f9fc;
+            color: #858796;
+            border: 1px solid #e3e6f0;
+            border-radius: 12px;
+            padding: 12px 25px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .input-custom { border-radius: 12px; border: 1px solid #e3e6f0; padding: 12px; }
+        .input-custom:focus { border-color: #4e73df; box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.1); }
+    </style>
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
                 
-                @if ($errors->any())
-                    <div class="mb-4 p-4 bg-red-50 border-l-4 border-red-500 text-red-700">
-                        <ul class="list-disc list-inside text-sm">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
+                <a href="{{ route('mahasiswa.dashboard') }}" class="text-decoration-none text-muted mb-4 d-inline-block fw-bold">
+                    <i class="bi bi-arrow-left me-1"></i> Kembali ke Dashboard
+                </a>
 
-                <form action="{{ route('mahasiswa.update', $report->id) }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    @method('PUT')
-
-                    <div class="grid grid-cols-1 gap-6">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <x-input-label for="nama_item" :value="__('Nama Barang / Buku')" />
-                                <x-text-input id="nama_item" name="nama_item" type="text" class="mt-1 block w-full" :value="old('nama_item', $report->nama_item)" required />
-                            </div>
-                            <div>
-                                <x-input-label for="harga" :value="__('Harga (Rp)')" />
-                                <x-text-input id="harga" name="harga" type="number" class="mt-1 block w-full" :value="old('harga', $report->harga)" required />
-                            </div>
+                <div class="card card-edit shadow-lg bg-white">
+                    <div class="card-body p-4 p-md-5">
+                        
+                        <div class="text-center mb-5">
+                            <div class="display-6 text-primary mb-2"><i class="bi bi-pencil-square"></i></div>
+                            <h3 class="fw-bold text-dark">Perbaiki Laporan</h3>
+                            <p class="text-muted small">Update data laporan beasiswa Anda dengan benar.</p>
                         </div>
 
-                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
-                            <x-input-label for="foto_nota" :value="__('Foto Nota (Kosongkan jika tidak diganti)')" />
-                            <div class="flex items-center space-x-4 mt-3">
-                                <img src="{{ asset('storage/' . $report->foto_nota) }}" class="w-20 h-20 object-cover rounded shadow-sm border">
-                                <input type="file" name="foto_nota" class="block w-full text-sm text-gray-500" />
+                        @if ($errors->any())
+                            <div class="alert alert-danger border-0 shadow-sm rounded-4 mb-4">
+                                <ul class="mb-0 small">
+                                    @foreach ($errors->all() as $error)
+                                        <li><i class="bi bi-exclamation-circle me-2"></i>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
                             </div>
-                        </div>
+                        @endif
 
-                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
-                            <x-input-label for="foto_barang" :value="__('Foto Barang (Kosongkan jika tidak diganti)')" />
-                            <div class="flex items-center space-x-4 mt-3">
-                                <img src="{{ asset('storage/' . $report->foto_barang) }}" class="w-20 h-20 object-cover rounded shadow-sm border">
-                                <input type="file" name="foto_barang" class="block w-full text-sm text-gray-500" />
+                        <form action="{{ route('mahasiswa.update', $report->id) }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            @method('PUT')
+
+                            <div class="row g-4">
+                                <div class="col-md-7">
+                                    <label class="form-label small fw-bold">Nama Barang / Judul Buku</label>
+                                    <input type="text" name="nama_item" class="form-control input-custom" value="{{ old('nama_item', $report->nama_item) }}" required>
+                                </div>
+
+                                <div class="col-md-5">
+                                    <label class="form-label small fw-bold">Harga (Rp)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light fw-bold">Rp</span>
+                                        <input type="number" name="harga" class="form-control input-custom" value="{{ old('harga', $report->harga) }}" required>
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="p-3 rounded-4 border bg-light">
+                                        <label class="form-label small fw-bold d-block mb-3">Foto Nota Pembelian</label>
+                                        <div class="d-flex align-items-center gap-4">
+                                            <img src="{{ asset('storage/' . $report->foto_nota) }}" class="rounded-3 shadow-sm border" style="width: 100px; height: 100px; object-fit: cover;">
+                                            <div>
+                                                <input type="file" name="foto_nota" class="form-control form-control-sm">
+                                                <small class="text-muted d-block mt-2 italic">Kosongkan jika tidak ingin mengganti nota.</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="p-3 rounded-4 border bg-light">
+                                        <label class="form-label small fw-bold d-block mb-3">Foto Barang Fisik</label>
+                                        <div class="d-flex align-items-center gap-4">
+                                            <img src="{{ asset('storage/' . $report->foto_barang) }}" class="rounded-3 shadow-sm border" style="width: 100px; height: 100px; object-fit: cover;">
+                                            <div>
+                                                <input type="file" name="foto_barang" class="form-control form-control-sm">
+                                                <small class="text-muted d-block mt-2 italic">Kosongkan jika tidak ingin mengganti foto barang.</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 mt-5 d-flex justify-content-end gap-2">
+                                    <a href="{{ route('mahasiswa.dashboard') }}" class="btn btn-cancel">
+                                        BATAL
+                                    </a>
+                                    <button type="submit" class="btn btn-update px-5 shadow-sm">
+                                        <i class="bi bi-check-circle-fill me-2"></i>SIMPAN PERUBAHAN
+                                    </button>
+                                </div>
                             </div>
-                        </div>
+                        </form>
                     </div>
-
-                    <div class="flex items-center justify-end mt-8 border-t pt-6 space-x-3">
-                        <a href="{{ route('mahasiswa.dashboard') }}" class="px-4 py-2 bg-gray-100 text-gray-600 rounded-md text-xs font-bold">BATAL</a>
-                        <x-primary-button class="bg-indigo-600">
-                            {{ __('Simpan Perubahan') }}
-                        </x-primary-button>
-                    </div>
-                </form>
+                </div>
+                <p class="text-center mt-4 text-muted small">&copy; 2026 Eratme Scholarship | Fitria Yosefina</p>
             </div>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </x-app-layout>

@@ -12,9 +12,7 @@ class DashboardController extends Controller
     public function mahasiswa()
     {
         // Mengambil laporan khusus milik mahasiswa yang sedang login
-        $reports = Report::where('user_id', Auth::id())
-                        ->orderBy('created_at', 'desc')
-                        ->get();
+        $reports = \App\Models\Report::where('user_id', auth()->id())->get();
 
         // Mengirim data laporan ke view dashboard mahasiswa
         return view('mahasiswa.dashboard', compact('reports'));
