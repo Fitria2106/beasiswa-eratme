@@ -51,6 +51,6 @@ Route::get('/dashboard', function () {
 
 
 // Route hapus laporan khusus admin
-// Tambahkan baris ini
+// Tambahkan barsis ini
 Route::delete('/admin/reports/{id}', [ReportController::class, 'destroyAdmin'])->name('admin.report.destroy');
 require __DIR__.'/auth.php';
