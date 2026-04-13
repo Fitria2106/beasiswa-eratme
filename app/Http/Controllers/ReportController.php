@@ -9,7 +9,7 @@ use App\Models\Report;
 
 class ReportController extends Controller
 {
-    // 1. Simpan Laporan Baru
+    // 1. Simpan Laporan Baru (Mahasiswa)
     public function store(Request $request)
     {
         $request->validate([
@@ -57,10 +57,8 @@ class ReportController extends Controller
     // 3. Update Laporan
     public function update(Request $request, $id)
     {
-        // 1. Cari data (Pastikan hanya milik mahasiswa yang login)
         $report = Report::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
 
-        // 2. Validasi (Jika gagal, layar tidak akan pindah dan muncul pesan merah)
         $request->validate([
             'nama_item' => 'required|string|max:255',
             'harga'     => 'required|numeric',
@@ -68,12 +66,10 @@ class ReportController extends Controller
             'foto_barang' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        // 3. Update data teks
         $report->nama_item = $request->nama_item;
         $report->harga = $request->harga;
-        $report->status = 'pending'; // Reset status supaya admin cek ulang
+        $report->status = 'pending'; 
 
-        // 4. Update foto (Hanya jika ada file baru yang diunggah)
         if ($request->hasFile('foto_nota')) {
             if ($report->foto_nota) { Storage::disk('public')->delete($report->foto_nota); }
             $report->foto_nota = $request->file('foto_nota')->store('notas', 'public');
@@ -84,24 +80,24 @@ class ReportController extends Controller
             $report->foto_barang = $request->file('foto_barang')->store('barangs', 'public');
         }
 
-        // 5. INI BAGIAN PALING PENTING! JANGAN SAMPAI LEWAT
         $report->save(); 
 
-        // 6. Pindah layar kembali ke dashboard
         return redirect()->route('mahasiswa.dashboard')->with('success', 'Laporan berhasil diperbarui!');
     }
-    // 4. Hapus Laporan
-    public function destroy($id)
-    {
-        public function destroyAdmin($id)
-        {
-            // Temukan laporan berdasarkan ID
-           $report = \App\Models\Report::findOrFail($id);
-            
-            // Hapus laporan dari database
-            $report->delete();
 
-            // Kembali ke halaman sebelumnya dengan pesan sukses
-           eturn redirect()->back()->with('success', 'Laporan berhasil dihapus oleh Admin.');
-        }
+    // 4. Hapus Laporan Khusus Admin
+    public function destroyAdmin($id)
+    {
+        // Cari laporan
+        $report = Report::findOrFail($id);
+        
+        // Hapus file dari storage agar tidak memenuhi server
+        if ($report->foto_nota) { Storage::disk('public')->delete($report->foto_nota); }
+        if ($report->foto_barang) { Storage::disk('public')->delete($report->foto_barang); }
+
+        // Hapus data dari database
+        $report->delete();
+
+        return redirect()->back()->with('success', 'Laporan berhasil dihapus oleh Admin.');
     }
+}
