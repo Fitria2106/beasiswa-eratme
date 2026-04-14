@@ -88,14 +88,11 @@ class ReportController extends Controller
     // 4. Hapus Laporan Khusus Admin
     public function destroyAdmin($id)
     {
-        // Cari laporan
         $report = Report::findOrFail($id);
         
-        // Hapus file dari storage agar tidak memenuhi server
         if ($report->foto_nota) { Storage::disk('public')->delete($report->foto_nota); }
         if ($report->foto_barang) { Storage::disk('public')->delete($report->foto_barang); }
 
-        // Hapus data dari database
         $report->delete();
 
         return redirect()->back()->with('success', 'Laporan berhasil dihapus oleh Admin.');
