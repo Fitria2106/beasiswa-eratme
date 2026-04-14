@@ -40,69 +40,29 @@
                     <p class="text-muted small">Silakan masuk untuk mengelola laporan Anda</p>
                 </div>
                 <div class="card-body px-4 pb-4">
-                    
-                    @if (session('status'))
-                        <div class="alert alert-success mb-4" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
+    <form method="POST" action="{{ route('login') }}">
+        @csrf
 
-                    <form method="POST" action="{{ route('login') }}">
-                        @csrf
+        <div class="mb-3">
+            <label class="form-label fw-bold small text-muted">Email atau NIM</label>
+            <input type="text" name="email" class="form-control rounded-pill bg-light" required>
+        </div>
 
-                        <div class="mb-3">
-                            <label for="email" class="form-label small fw-bold">Alamat Email</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light"><i class="bi bi-envelope"></i></span>
-                                <input id="email" type="email" name="email" 
-                                       class="form-control @error('email') is-invalid @enderror" 
-                                       value="{{ old('email') }}" required autofocus placeholder="nama@email.com">
-                            </div>
-                            @error('email')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+        <div class="mb-3">
+            <label class="form-label fw-bold small text-muted">Password</label>
+            <div class="input-group">
+                <input type="password" name="password" id="password" class="form-control rounded-start-pill bg-light border-end-0" required>
+                <button class="btn btn-light border border-start-0 rounded-end-pill px-3 text-muted" type="button" id="togglePassword">
+                    <i class="bi bi-eye-slash" id="eyeIcon"></i>
+                </button>
+            </div>
+        </div>
 
-                        <div class="mb-3">
-                            <label for="password" class="form-label small fw-bold">Password</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light"><i class="bi bi-lock"></i></span>
-                                <input id="password" type="password" name="password" 
-                                       class="form-control @error('password') is-invalid @enderror" 
-                                       required autocomplete="current-password" placeholder="••••••••">
-                            </div>
-                            @error('password')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <div class="form-check">
-                                <input id="remember_me" type="checkbox" class="form-check-input" name="remember">
-                                <label class="form-check-label text-muted small" for="remember_me">Ingat saya</label>
-                            </div>
-                            @if (Route::has('password.request'))
-                                <a class="text-decoration-none small" href="{{ route('password.request') }}">
-                                    Lupa password?
-                                </a>
-                            @endif
-                        </div>
-
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary py-2 fw-bold shadow-sm">
-                                <i class="bi bi-box-arrow-in-right me-2"></i> MASUK SEKARANG
-                            </button>
-                        </div>
-
-                        <hr class="my-4 text-muted">
-                        <div class="text-center">
-                            <p class="small text-muted mb-0">Belum memiliki akun?</p>
-                            <a href="{{ route('register') }}" class="fw-bold text-decoration-none">
-                                Buat Akun Beasiswa Baru
-                            </a>
-                        </div>
-                    </form>
-                </div>
+        <div class="d-grid mt-4">
+            <button type="submit" class="btn btn-primary rounded-pill fw-bold py-2 shadow-sm">Masuk Sekarang</button>
+        </div>
+    </form>
+</div>
             </div>
             <p class="text-center text-muted mt-4 small">&copy; 2026 Eratme Scholarship | Created by Fitria</p>
         </div>
@@ -110,3 +70,24 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Fitria, ini script untuk mengaktifkan fitur intip password
+    const togglePassword = document.querySelector('#togglePassword');
+    const password = document.querySelector('#password');
+    const eyeIcon = document.querySelector('#eyeIcon');
+
+    togglePassword.addEventListener('click', function () {
+        // 1. Cek tipe input sekarang, lalu balikkan (password jadi text, text jadi password)
+        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+        password.setAttribute('type', type);
+        
+        // 2. Ubah ikon mata (coret jadi biasa, biasa jadi coret)
+        eyeIcon.classList.toggle('bi-eye');
+        eyeIcon.classList.toggle('bi-eye-slash');
+        
+        // 3. Efek klik (opsional: agar tombol terasa ditekan)
+        this.classList.toggle('btn-primary');
+        this.classList.toggle('text-white');
+    });
+</script>

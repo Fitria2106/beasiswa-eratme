@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Report; // Pastikan Model Report sudah di-import
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class DashboardController extends Controller
 {
@@ -25,5 +26,27 @@ class DashboardController extends Controller
         $allReports = Report::with('user')->orderBy('created_at', 'desc')->get();
         
         return view('admin.dashboard', compact('allReports'));
+
+    }
+
+    // Tambahkan fungsi ini di dalam DashboardController kamu
+    
+        public function cetak_pdf()
+    {
+        // 1. Mengambil data laporan beserta data user (mahasiswa)
+        $reports = Report::with('user')->get();
+        
+        // 2. Kelompokkan berdasarkan User ID
+        $grouped_reports = $reports->groupBy('user_id');
+
+        // 3. Load view dan aktifkan akses gambar (logo) dari URL luar
+        $pdf = Pdf::loadView('admin.cetak_pdf', compact('grouped_reports'))
+                  ->setOption(['isRemoteEnabled' => true]); // Cara cepat aktifkan logo
+        
+        // 4. Atur ukuran kertas
+        $pdf->setPaper('a4', 'portrait');
+        
+        // 5. Tampilkan di browser
+        return $pdf->stream('Laporan-Beasiswa-Eratme.pdf');
     }
 }

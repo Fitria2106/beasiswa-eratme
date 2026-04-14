@@ -23,16 +23,11 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:mahasiswa'])->group(function () {
         Route::get('/mahasiswa/dashboard', [DashboardController::class, 'mahasiswa'])->name('mahasiswa.dashboard');
         
-        Route::get('/upload', function () { 
-            return view('mahasiswa.upload'); 
-        })->name('mahasiswa.upload');
-
-        Route::post('/upload', [ReportController::class, 'store'])->name('mahasiswa.store');
-        
-        // Route edit, update, destroy milik mahasiswa taruh di sini jika ada
-        Route::get('/report/{id}/edit', [ReportController::class, 'edit'])->name('mahasiswa.edit');
-        Route::put('/report/{id}', [ReportController::class, 'update'])->name('mahasiswa.update');
-        Route::delete('/report/{id}', [ReportController::class, 'destroy'])->name('mahasiswa.destroy');
+        // Ganti bagian ini di web.php kamu
+    Route::get('/upload', function () { 
+        return "Halo Fitria, jika tulisan ini muncul berarti routernya benar"; 
+    });
+Route::post('/upload', [ReportController::class, 'store'])->name('mahasiswa.store');
     });
 
     // 3. PROFILE
@@ -44,13 +39,23 @@ Route::middleware(['auth'])->group(function () {
 
 // 4. ROUTE PENENGAH (Harus di luar grup auth agar tidak konflik)
 Route::get('/dashboard', function () {
-    return auth()->user()->role === 'admin' 
-        ? redirect()->route('admin.dashboard') 
-        : redirect()->route('mahasiswa.dashboard');
+    $user = auth()->user();
+
+    // Cek apakah user benar-benar punya role
+    if ($user->role === 'admin') {
+        return redirect()->route('admin.dashboard');
+    } elseif ($user->role === 'mahasiswa') {
+        return redirect()->route('mahasiswa.dashboard');
+    }
+
+    // Jika role tidak dikenal, lempar ke halaman awal atau logout
+    return redirect('/')->with('error', 'Role tidak dikenali.');
 })->middleware(['auth'])->name('dashboard');
 
 
 // Route hapus laporan khusus admin
 // Tambahkan barsis ini
 Route::delete('/admin/reports/{id}', [ReportController::class, 'destroyAdmin'])->name('admin.report.destroy');
+
+
 require __DIR__.'/auth.php';

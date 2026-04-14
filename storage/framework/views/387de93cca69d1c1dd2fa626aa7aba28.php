@@ -18,7 +18,7 @@
 <body>
 
     <div class="header">
-    @php
+    <?php
         // 1. Cek folder public/images/ apakah namanya logo-eratme.png atau logo-eramet.png
         // Sesuaikan nama file di bawah ini dengan yang ada di folder kamu
         $namaFile = 'logo-eratme.png'; 
@@ -31,22 +31,23 @@
         } else {
             $base64 = null;
         }
-    @endphp
+    ?>
     
-    @if($base64)
-        <img src="{{ $base64 }}" class="logo">
-    @else
+    <?php if($base64): ?>
+        <img src="<?php echo e($base64); ?>" class="logo">
+    <?php else: ?>
         <div style="color: red; font-size: 10px;">
-            Logo tidak ditemukan di: {{ $path }}
+            Logo tidak ditemukan di: <?php echo e($path); ?>
+
         </div>
-    @endif
+    <?php endif; ?>
 
     <div class="title">LAPORAN PENGGUNAAN DANA BEASISWA ERATME</div>
-    <p>Yogyakarta, {{ date('d F Y') }}</p>
+    <p>Yogyakarta, <?php echo e(date('d F Y')); ?></p>
 </div>
-    @foreach($grouped_reports as $userId => $userReports)
-        @php $user = $userReports->first()->user; @endphp
-        <h3>Mahasiswa: {{ strtoupper($user->name) }} ({{ $user->nim }})</h3>
+    <?php $__currentLoopData = $grouped_reports; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $userId => $userReports): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+        <?php $user = $userReports->first()->user; ?>
+        <h3>Mahasiswa: <?php echo e(strtoupper($user->name)); ?> (<?php echo e($user->nim); ?>)</h3>
         
         <table>
             <thead>
@@ -58,28 +59,28 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($userReports as $index => $report)
+                <?php $__currentLoopData = $userReports; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $report): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <tr>
-                    <td>{{ $index + 1 }}</td>
-                    <td>{{ $report->nama_item }}</td>
-                    <td>{{ $report->ringkasan_buku ?? $report->keterangan }}</td>
-                    <td class="text-right">Rp {{ number_format($report->harga, 0, ',', '.') }}</td>
+                    <td><?php echo e($index + 1); ?></td>
+                    <td><?php echo e($report->nama_item); ?></td>
+                    <td><?php echo e($report->ringkasan_buku ?? $report->keterangan); ?></td>
+                    <td class="text-right">Rp <?php echo e(number_format($report->harga, 0, ',', '.')); ?></td>
                 </tr>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </tbody>
             <tfoot>
                 <tr class="total-row">
                     <td colspan="3" class="text-right">Sub-Total</td>
-                    <td class="text-right">Rp {{ number_format($userReports->sum('harga'), 0, ',', '.') }}</td>
+                    <td class="text-right">Rp <?php echo e(number_format($userReports->sum('harga'), 0, ',', '.')); ?></td>
                 </tr>
             </tfoot>
         </table>
         <hr>
-    @endforeach
+    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
     <div class="footer">
         <p>Dicetak secara sistem oleh Admin Eratme</p>
     </div>
 
 </body>
-</html>
+</html><?php /**PATH C:\Users\Dell\reportbook\resources\views/admin/cetak_pdf.blade.php ENDPATH**/ ?>
