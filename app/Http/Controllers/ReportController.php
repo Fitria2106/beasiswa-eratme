@@ -40,18 +40,13 @@ class ReportController extends Controller
             'status'        => 'pending',
         ]);
 
-        return redirect()->route('mahasiswa.dashboard')->with('success', 'Laporan Beasiswa Berhasil Dikirim!');
+        return redirect()->route('mahasiswa.dashboard')->with('success', 'Laporan Berhasil Dikirim!');
     }
 
     // 2. Form Edit
     public function edit($id)
     {
         $report = Report::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
-
-        if ($report->status === 'disetujui') {
-            return redirect()->route('mahasiswa.dashboard')->with('error', 'Laporan yang sudah disetujui tidak dapat diubah.');
-        }
-
         return view('mahasiswa.edit', compact('report'));
     }
 
@@ -63,8 +58,6 @@ class ReportController extends Controller
         $request->validate([
             'nama_item' => 'required|string|max:255',
             'harga'     => 'required|numeric',
-            'foto_nota' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'foto_barang' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         $report->nama_item = $request->nama_item;
