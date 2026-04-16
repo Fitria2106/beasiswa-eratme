@@ -10,6 +10,11 @@ use Barryvdh\DomPDF\Facade\Pdf; // Import facade PDF agar lebih rapi
 
 class ReportController extends Controller
 {
+
+    public function create()
+    {
+        return view('mahasiswa.upload');
+    }
     // 1. Simpan Laporan Baru (Mahasiswa)
     public function store(Request $request)
     {

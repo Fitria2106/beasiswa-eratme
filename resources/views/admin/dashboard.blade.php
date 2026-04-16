@@ -58,38 +58,32 @@
             </div>
             <a href="{{ route('admin.cetak_pdf') }}" class="btn btn-outline-dark rounded-pill px-4 shadow-sm fw-bold bg-white">
                 <i class="bi bi-file-earmark-pdf me-2"></i> Download PDF
-            </a>php
+            </a>
         </div>
 
         <div class="container-fluid p-0">
             <div class="row g-4 mb-5 no-print">
-                <div class="col-md-4"><div class="card card-stats p-4 bg-white border-start border-primary border-5 h-100"><small class="text-muted fw-bold text-uppercase">Total Mahasiswa</small><h2 class="fw-bold mb-0">{{ $allReports->unique('user_id')->count() }} Orang</h2></div></div>
-                <div class="row g-4 mb-5 no-print">
-    <div class="col-md-3">
-        <div class="card card-stats p-4 bg-white border-start border-primary border-5 h-100">
-            <small class="text-muted fw-bold text-uppercase">Total Mahasiswa</small>
-            <h2 class="fw-bold mb-0">{{ $allReports->unique('user_id')->count() }}</h2>
-        </div>
-    </div>
-
-                    <div class="col-md-3">
-                        <div class="card card-stats p-4 bg-white border-start border-info border-5 h-100">
-                            <small class="text-muted fw-bold text-uppercase">Total Transaksi</small>
-                            <h2 class="fw-bold mb-0">{{ $totalTransaksi }} Kali</h2>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="card card-stats p-4 bg-white border-start border-warning border-5 h-100">
-                            <small class="text-muted fw-bold text-uppercase">Dana Terpakai</small>
-                            <h2 class="fw-bold mb-0 text-primary">Rp {{ number_format($allReports->sum('harga'), 0, ',', '.') }}</h2>
-                        </div>
+                <div class="col-md-4">
+                    <div class="card card-stats p-4 bg-white border-start border-primary border-5 h-100">
+                        <small class="text-muted fw-bold text-uppercase">Total Mahasiswa</small>
+                        <h2 class="fw-bold mb-0">{{ $allReports->unique('user_id')->count() }} Orang</h2>
                     </div>
                 </div>
-                <div class="col-md-4"><div class="card card-stats p-4 bg-white border-start border-success border-5 h-100"><small class="text-muted fw-bold text-uppercase">Item Dilaporkan</small><h2 class="fw-bold mb-0">{{ $allReports->count() }} Item</h2></div></div>
-                <div class="col-md-4"><div class="card card-stats p-4 bg-white border-start border-warning border-5 h-100"><small class="text-muted fw-bold text-uppercase">Dana Terpakai</small><h2 class="fw-bold mb-0 text-primary">Rp {{ number_format($allReports->sum('harga'), 0, ',', '.') }}</h2></div></div>
+                
+                <div class="col-md-4">
+                    <div class="card card-stats p-4 bg-white border-start border-success border-5 h-100">
+                        <small class="text-muted fw-bold text-uppercase">Item Dilaporkan</small>
+                        <h2 class="fw-bold mb-0">{{ $allReports->count() }} Item</h2>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card card-stats p-4 bg-white border-start border-warning border-5 h-100">
+                        <small class="text-muted fw-bold text-uppercase">Dana Terpakai</small>
+                        <h2 class="fw-bold mb-0 text-primary">Rp {{ number_format($allReports->sum('harga'), 0, ',', '.') }}</h2>
+                    </div>
+                </div>
             </div>
-
             <div class="table-container shadow-sm border-0">
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0">
@@ -178,13 +172,20 @@
                 </div>
                 <div class="modal-body p-4 text-center">
                     <div class="row g-2 mb-3">
-                        <div class="col-6"><small class="text-muted d-block mb-1">Nota</small><img src="{{ asset('storage/'.$report->foto_nota) }}" class="img-fluid rounded border"></div>
+                        <div class="col-6">
+                        <small class="text-muted d-block mb-1">Nota</small>
+                        <img src="{{ $report->foto_nota ? asset('storage/'.$report->foto_nota) : 'https://placehold.co/400x300?text=No+Image' }}" 
+                             class="img-fluid rounded border shadow-sm" 
+                             style="height: 150px; width: 100%; object-fit: cover;">
+                    </div>
                         <div class="col-6"><small class="text-muted d-block mb-1">Barang</small><img src="{{ asset('storage/'.$report->foto_barang) }}" class="img-fluid rounded border"></div>
                     </div>
                     <h5 class="fw-bold text-dark">{{ $report->nama_item }}</h5>
                 </div>
                 <div class="modal-footer border-0 justify-content-center pb-4">
-                    <form action="/admin/approve/{{ $report->id }}" method="POST"> @csrf @method('PATCH')
+                    <form action="{{ route('admin.report.status', ['id' => $report->id, 'status' => 'disetujui']) }}" method="POST"> 
+                        @csrf 
+                        @method('PATCH')
                         <button class="btn btn-success rounded-pill px-4 fw-bold">SETUJUI</button>
                     </form>
                     <form action="/admin/reject/{{ $report->id }}" method="POST"> @csrf @method('PATCH')
