@@ -28,28 +28,28 @@
     <table class="header-table">
         <tr>
             <td width="15%">
-                @php
+                <?php
                     $pathEratme = public_path('images/logo-eratme.png');
                     $base64Eratme = file_exists($pathEratme) ? 'data:image/png;base64,' . base64_encode(file_get_contents($pathEratme)) : null;
-                @endphp
-                @if($base64Eratme) <img src="{{ $base64Eratme }}" class="logo"> @endif
+                ?>
+                <?php if($base64Eratme): ?> <img src="<?php echo e($base64Eratme); ?>" class="logo"> <?php endif; ?>
             </td>
             <td width="70%" class="kop-text">
                 <h2>BEASISWA ERATME</h2>
                 <h3>LAPORAN KEUANGAN PENGGUNAAN DANA BUKU & ATK</h3>
-                <p>Alamat: Yogyakarta | Email: info@eratme.com | Periode: {{ date('Y') }}</p>
+                <p>Alamat: Yogyakarta | Email: info@eratme.com | Periode: <?php echo e(date('Y')); ?></p>
             </td>
             <td width="15%">
-                @php
+                <?php
                     $pathKbf = public_path('images/logo-kbf.png'); // Pastikan file logo-kbf.png ada di folder public/images/
                     $base64Kbf = file_exists($pathKbf) ? 'data:image/png;base64,' . base64_encode(file_get_contents($pathKbf)) : null;
-                @endphp
-                @if($base64Kbf) <img src="{{ $base64Kbf }}" class="logo"> @endif
+                ?>
+                <?php if($base64Kbf): ?> <img src="<?php echo e($base64Kbf); ?>" class="logo"> <?php endif; ?>
             </td>
         </tr>
     </table>
 
-    <p class="text-right">Tanggal Cetak: {{ date('d/m/Y') }}</p>
+    <p class="text-right">Tanggal Cetak: <?php echo e(date('d/m/Y')); ?></p>
 
     <table>
         <thead>
@@ -62,56 +62,56 @@
             </tr>
         </thead>
         <tbody>
-            @php $grandTotal = 0; $no = 1; @endphp
-            @foreach($grouped_reports as $userId => $userReports)
-                @php 
+            <?php $grandTotal = 0; $no = 1; ?>
+            <?php $__currentLoopData = $grouped_reports; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $userId => $userReports): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <?php 
                     $user = $userReports->first()->user; 
                     $subTotal = $userReports->sum('harga');
                     $grandTotal += $subTotal;
-                @endphp
+                ?>
                 
                 <tr class="bg-gray">
-                    <td class="text-center">{{ $no++ }}</td>
+                    <td class="text-center"><?php echo e($no++); ?></td>
                     <td>
-                        <strong>{{ strtoupper($user->name) }}</strong><br>
-                        <span>NIM: {{ $user->nim }}</span>
+                        <strong><?php echo e(strtoupper($user->name)); ?></strong><br>
+                        <span>NIM: <?php echo e($user->nim); ?></span>
                     </td>
-                    <td colspan="3">Jurusan: {{ $user->jurusan }}</td>
+                    <td colspan="3">Jurusan: <?php echo e($user->jurusan); ?></td>
                 </tr>
 
-                @foreach($userReports as $report)
+                <?php $__currentLoopData = $userReports; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $report): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <tr>
                     <td></td>
                     <td></td>
                     <td>
-                        {{ $report->nama_item }}<br>
-                        <small><em>{{ $report->ringkasan_buku ?? $report->keterangan }}</em></small>
+                        <?php echo e($report->nama_item); ?><br>
+                        <small><em><?php echo e($report->ringkasan_buku ?? $report->keterangan); ?></em></small>
                     </td>
-                    <td class="text-center">{{ $report->semester }}</td>
-                    <td class="text-right">Rp {{ number_format($report->harga, 0, ',', '.') }}</td>
+                    <td class="text-center"><?php echo e($report->semester); ?></td>
+                    <td class="text-right">Rp <?php echo e(number_format($report->harga, 0, ',', '.')); ?></td>
                 </tr>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
                 <tr class="total-row">
-                    <td colspan="4" class="text-right">Sub-Total Penggunaan {{ $user->name }}</td>
-                    <td class="text-right">Rp {{ number_format($subTotal, 0, ',', '.') }}</td>
+                    <td colspan="4" class="text-right">Sub-Total Penggunaan <?php echo e($user->name); ?></td>
+                    <td class="text-right">Rp <?php echo e(number_format($subTotal, 0, ',', '.')); ?></td>
                 </tr>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </tbody>
         <tfoot>
             <tr style="background-color: #333; color: white;">
                 <td colspan="4" class="text-right"><strong>TOTAL KESELURUHAN DANA TERPAKAI</strong></td>
-                <td class="text-right"><strong>Rp {{ number_format($grandTotal, 0, ',', '.') }}</strong></td>
+                <td class="text-right"><strong>Rp <?php echo e(number_format($grandTotal, 0, ',', '.')); ?></strong></td>
             </tr>
         </tfoot>
     </table>
 
     <div style="margin-top: 50px; float: right; width: 200px; text-align: center;">
-        <p>Yogyakarta, {{ date('d F Y') }}</p>
+        <p>Yogyakarta, <?php echo e(date('d F Y')); ?></p>
         <p>Mengetahui,</p>
         <br><br><br>
         <p><strong>Admin Beasiswa Eratme</strong></p>
     </div>
 
 </body>
-</html>
+</html><?php /**PATH C:\Users\Dell\reportbook\resources\views/admin/cetak_pdf.blade.php ENDPATH**/ ?>

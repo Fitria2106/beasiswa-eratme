@@ -16,11 +16,8 @@ class DatabaseSeeder extends Seeder
     public function run(): void
 {
     \App\Models\User::create([
-        'name' => 'KbfAdmin',
-        'email' => 'admin@eratme.com', // Ganti dengan email kamu
-        'password' => Hash::make('password123'), // Ganti password yang kuat
-        'role' => 'admin',
-        'nim' => '000000', // Admin tetap butuh isi kolom NIM jika di migrasi kamu 'required'
+        $this->call([
+        UserSeeder::class,
+        ReportSeeder::class,
     ]);
-}
 }

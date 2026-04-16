@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MahasiswaController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -21,13 +22,21 @@ Route::middleware(['auth'])->group(function () {
 
     // 2. KHUSUS MAHASISWA
     Route::middleware(['role:mahasiswa'])->group(function () {
-        Route::get('/mahasiswa/dashboard', [DashboardController::class, 'mahasiswa'])->name('mahasiswa.dashboard');
-        
-        // Ganti bagian ini di web.php kamu
+    Route::get('/mahasiswa/dashboard', [DashboardController::class, 'mahasiswa'])->name('mahasiswa.dashboard');
+    
+    // Menampilkan halaman form (Pastikan file ada di resources/views/upload.blade.php)
     Route::get('/upload', function () { 
-        return "Halo Fitria, jika tulisan ini muncul berarti routernya benar"; 
-    });
-Route::post('/upload', [ReportController::class, 'store'])->name('mahasiswa.store');
+        return view('mahasiswa.upload'); 
+    })->name('mahasiswa.upload');
+
+    Route::get('/mahasiswa/edit/{id}', [ReportController::class, 'edit'])->name('mahasiswa.edit');
+    
+    // Memproses update data
+    Route::put('/mahasiswa/update/{id}', [ReportController::class, 'update'])->name('mahasiswa.update');
+
+    // Proses simpan menggunakan ReportController
+    Route::post('/upload', [ReportController::class, 'store'])->name('mahasiswa.store');
+
     });
 
     // 3. PROFILE
