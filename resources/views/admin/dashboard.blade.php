@@ -64,6 +64,28 @@
         <div class="container-fluid p-0">
             <div class="row g-4 mb-5 no-print">
                 <div class="col-md-4"><div class="card card-stats p-4 bg-white border-start border-primary border-5 h-100"><small class="text-muted fw-bold text-uppercase">Total Mahasiswa</small><h2 class="fw-bold mb-0">{{ $allReports->unique('user_id')->count() }} Orang</h2></div></div>
+                <div class="row g-4 mb-5 no-print">
+    <div class="col-md-3">
+        <div class="card card-stats p-4 bg-white border-start border-primary border-5 h-100">
+            <small class="text-muted fw-bold text-uppercase">Total Mahasiswa</small>
+            <h2 class="fw-bold mb-0">{{ $allReports->unique('user_id')->count() }}</h2>
+        </div>
+    </div>
+
+                    <div class="col-md-3">
+                        <div class="card card-stats p-4 bg-white border-start border-info border-5 h-100">
+                            <small class="text-muted fw-bold text-uppercase">Total Transaksi</small>
+                            <h2 class="fw-bold mb-0">{{ $totalTransaksi }} Kali</h2>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="card card-stats p-4 bg-white border-start border-warning border-5 h-100">
+                            <small class="text-muted fw-bold text-uppercase">Dana Terpakai</small>
+                            <h2 class="fw-bold mb-0 text-primary">Rp {{ number_format($allReports->sum('harga'), 0, ',', '.') }}</h2>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-md-4"><div class="card card-stats p-4 bg-white border-start border-success border-5 h-100"><small class="text-muted fw-bold text-uppercase">Item Dilaporkan</small><h2 class="fw-bold mb-0">{{ $allReports->count() }} Item</h2></div></div>
                 <div class="col-md-4"><div class="card card-stats p-4 bg-white border-start border-warning border-5 h-100"><small class="text-muted fw-bold text-uppercase">Dana Terpakai</small><h2 class="fw-bold mb-0 text-primary">Rp {{ number_format($allReports->sum('harga'), 0, ',', '.') }}</h2></div></div>
             </div>
@@ -85,6 +107,7 @@
                                     $user = $userReports->first()->user; 
                                     $totalMhs = $userReports->sum('harga');
                                 @endphp
+                                
                                 <tr class="table-secondary">
                                     <td colspan="4" class="ps-4 py-3">
                                         <i class="bi bi-person-fill me-2 text-primary"></i>

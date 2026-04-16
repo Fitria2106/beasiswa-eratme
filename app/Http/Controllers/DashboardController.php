@@ -24,8 +24,11 @@ class DashboardController extends Controller
     {
         // Mengambil semua laporan dan dikelompokkan berdasarkan user (untuk grouping)
         $allReports = Report::with('user')->orderBy('created_at', 'desc')->get();
-        
-        return view('admin.dashboard', compact('allReports'));
+    
+        // Menghitung total transaksi (jumlah baris di tabel reports)
+        $totalTransaksi = $allReports->count();
+    
+    return view('admin.dashboard', compact('allReports', 'totalTransaksi'));
 
     }
 
