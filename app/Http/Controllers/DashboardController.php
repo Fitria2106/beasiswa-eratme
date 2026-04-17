@@ -52,4 +52,12 @@ class DashboardController extends Controller
         // 5. Tampilkan di browser
         return $pdf->stream('Laporan-Beasiswa-Eratme.pdf');
     }
+   public function updateStatus(Request $request, $id)
+    {
+        $report = \App\Models\Report::findOrFail($id);
+        $report->status = $request->status; // Mengambil value 'disetujui' dari input hidden
+        $report->save();
+
+        return redirect()->back()->with('success', 'Status berhasil diperbarui!');
+    }
 }

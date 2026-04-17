@@ -183,10 +183,11 @@
                     <h5 class="fw-bold text-dark">{{ $report->nama_item }}</h5>
                 </div>
                 <div class="modal-footer border-0 justify-content-center pb-4">
-                    <form action="{{ route('admin.report.status', ['id' => $report->id, 'status' => 'disetujui']) }}" method="POST"> 
+                    <form action="{{ route('admin.report.status', $report->id) }}" method="POST"> 
                         @csrf 
                         @method('PATCH')
-                        <button class="btn btn-success rounded-pill px-4 fw-bold">SETUJUI</button>
+                        <input type="hidden" name="status" value="disetujui"> 
+                        <button type="submit" class="btn btn-success rounded-pill px-4 fw-bold">SETUJUI</button>
                     </form>
                     <form action="/admin/reject/{{ $report->id }}" method="POST"> @csrf @method('PATCH')
                         <button class="btn btn-danger rounded-pill px-4 fw-bold">TOLAK</button>

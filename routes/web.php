@@ -15,7 +15,8 @@ Route::middleware(['auth'])->group(function () {
     // 1. KHUSUS ADMIN
     Route::middleware(['role:admin'])->group(function () {
         Route::get('/admin/dashboard', [DashboardController::class, 'admin'])->name('admin.dashboard');
-        Route::post('/admin/report/{id}/status', [DashboardController::class, 'updateStatus'])->name('admin.report.status');
+       // Ganti dari Route::post menjadi Route::patch
+        Route::patch('/admin/report/{id}/status', [DashboardController::class, 'updateStatus'])->name('admin.report.status');
         Route::get('/admin/cetaklaporan', [DashboardController::class, 'cetak_pdf'])->name('admin.cetak_pdf');
         // Route hapus laporan (pindahkan ke sini agar aman)
         Route::delete('/admin/reports/{id}', [ReportController::class, 'destroyAdmin'])->name('admin.report.destroy');

@@ -37,7 +37,7 @@
             <td width="70%" class="kop-text">
                 <h2>BEASISWA ERATME</h2>
                 <h3>LAPORAN KEUANGAN PENGGUNAAN DANA BUKU & ATK</h3>
-                <p>Alamat: Yogyakarta | Email: info@eratme.com | Periode: {{ date('Y') }}</p>
+                <p>Alamat: Jakarta Selatan| Email: info@eratme.com | Periode: {{ date('Y') }}</p>
             </td>
             <td width="15%">
                 @php
