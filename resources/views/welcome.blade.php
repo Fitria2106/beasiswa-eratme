@@ -23,7 +23,7 @@
         <div class="row mb-4 align-items-center">
             <div class="col-md-6 text-center text-md-start">
                 <h3 class="fw-bold text-primary">E-Report Book</h3>
-                <p class="text-muted small">Pusat Pelaporan Beasiswa Eratme</p>
+                <p class="text-muted small">Pusat Pelaporan Eramet Beyond Scholarship</p>
             </div>
             <div class="col-md-6 text-md-end text-center mt-3 mt-md-0">
                 @if (Route::has('login'))
@@ -104,14 +104,14 @@
                     <hr class="border-light opacity-50">
                     <div class="small">
                         <p class="mb-2"><i class="bi bi-info-circle me-2"></i> Periode: 2026</p>
-                        <p class="mb-0"><i class="bi bi-geo-alt me-2"></i> Jayapura / Yogyakarta</p>
+                        <p class="mb-0"><i class="bi bi-geo-alt me-2"></i> Indonesia Timur</p>
                     </div>
                 </div>
             </div>
         </div>
         
         <footer class="mt-5 text-center py-4 text-muted">
-            <small>&copy; 2026 Eratme Scholarship. Develop by Fitria Yosefina R.W.</small>
+            <small>&copy; 2026 Eramet Beyond Scholarship. Develop by Fitria Yosefina R.W.</small>
         </footer>
     </div>
 </div>

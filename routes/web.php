@@ -4,7 +4,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
-
+use Illuminate\Support\Facades\Auth;
+use App\Models\Report;
+use App\Models\User;
 Route::get('/', function () {
     return view('welcome');
 });
@@ -20,6 +22,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/admin/cetaklaporan', [DashboardController::class, 'cetak_pdf'])->name('admin.cetak_pdf');
         // Route hapus laporan (pindahkan ke sini agar aman)
         Route::delete('/admin/reports/{id}', [ReportController::class, 'destroyAdmin'])->name('admin.report.destroy');
+        
+        // Contoh route cetak per user
+        Route::get('/admin/cetak-pdf/{user_id}', [DashboardController::class, 'cetak_user_pdf']);
     });
 
     // 2. KHUSUS MAHASISWA
@@ -52,5 +57,7 @@ Route::get('/dashboard', function () {
     }
     return redirect('/')->with('error', 'Role tidak dikenali.');
 })->middleware(['auth'])->name('dashboard');
+
+
 
 require __DIR__.'/auth.php';

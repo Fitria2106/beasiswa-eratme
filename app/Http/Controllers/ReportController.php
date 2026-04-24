@@ -63,6 +63,8 @@ class ReportController extends Controller
         $request->validate([
             'nama_item' => 'required|string|max:255',
             'harga'     => 'required|numeric',
+            'foto_nota'   => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Maks 2MB
+            'foto_barang' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         $report->nama_item = $request->nama_item;
@@ -113,6 +115,6 @@ class ReportController extends Controller
         $pdf->setPaper('a4', 'portrait');
         
         // 5. Tampilkan di browser
-        return $pdf->stream('Laporan-Beasiswa-Eratme.pdf');
+        return $pdf->stream('Laporan Eramet Beyond Scholarship.pdf');
     }
 }
