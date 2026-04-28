@@ -51,6 +51,49 @@
             .main-content { margin-left: 0 !important; padding: 0 !important; width: 100% !important; }
             body { background-color: white !important; }
         }
+
+        /* Lightbox Zoom Gambar */
+        .image-lightbox-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.92);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            cursor: zoom-out;
+            padding: 20px;
+        }
+        .image-lightbox-overlay.active {
+            display: flex;
+        }
+        .image-lightbox-overlay img {
+            max-height: 90vh;
+            max-width: 100%;
+            object-fit: contain;
+            border-radius: 12px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            cursor: default;
+        }
+        .image-lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 2.5rem;
+            line-height: 1;
+            cursor: pointer;
+            z-index: 10001;
+            background: none;
+            border: none;
+            padding: 0;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+        .image-lightbox-close:hover {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -273,6 +316,12 @@
 </div>
 @endforeach
 
+    {{-- LIGHTBOX ZOOM GAMBAR --}}
+    <div id="imageLightbox" class="image-lightbox-overlay">
+        <button type="button" class="image-lightbox-close" onclick="closeImageLightbox()">&times;</button>
+        <img src="" id="lightboxImage" alt="Zoom">
+    </div>
+
     <script>
         const toggleBtn = document.getElementById('toggleSidebar');
         const sidebar = document.getElementById('sidebar');
@@ -289,6 +338,40 @@
                     sidebar.classList.remove('active');
                     mainContent.classList.remove('shifted');
                 }
+            }
+        });
+
+        // Fitur Zoom Gambar (Lightbox)
+        function openImageLightbox(src) {
+            const lightbox = document.getElementById('imageLightbox');
+            const img = document.getElementById('lightboxImage');
+            img.src = src;
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeImageLightbox() {
+            const lightbox = document.getElementById('imageLightbox');
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        document.querySelectorAll('.bukti-thumbnail').forEach(img => {
+            img.addEventListener('click', function(e) {
+                e.stopPropagation();
+                openImageLightbox(this.src);
+            });
+        });
+
+        document.getElementById('imageLightbox').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeImageLightbox();
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeImageLightbox();
             }
         });
     </script>
