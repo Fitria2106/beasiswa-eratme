@@ -12,10 +12,12 @@ class UserSeeder extends Seeder
     {
         // 1. Buat Akun Admin
         User::create([
-            'name' => 'Admin Eratme',
-            'email' => 'admin@eratme.com',
+            'name' => 'Admin Eramet',
+            'email' => 'admin@eramet.com',
             'password' => Hash::make('password123'),
             'role' => 'admin',
+            'nim' => 'ADMIN001',
+            'jurusan' => '-',
         ]);
 
         // 2. Buat Akun Mahasiswa (Fitria)
@@ -24,6 +26,8 @@ class UserSeeder extends Seeder
             'email' => 'fitria@student.com',
             'password' => Hash::make('password123'),
             'role' => 'mahasiswa',
+            'nim' => '1234567890',
+            'jurusan' => 'S1 Informatika',
         ]);
 
         // 3. Buat Akun Mahasiswa Tambahan
@@ -32,6 +36,8 @@ class UserSeeder extends Seeder
             'email' => 'budi@student.com',
             'password' => Hash::make('password123'),
             'role' => 'mahasiswa',
+            'nim' => '0987654321',
+            'jurusan' => 'S1 Sistem Informasi',
         ]);
     }
 }

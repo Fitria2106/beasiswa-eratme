@@ -14,10 +14,10 @@ class DatabaseSeeder extends Seeder
      * Seed the application's database.
      */
     public function run(): void
-{
-    \App\Models\User::create([
+    {
         $this->call([
-        UserSeeder::class,
-        ReportSeeder::class,
-    ]);
+            UserSeeder::class,
+            ReportSeeder::class,
+        ]);
+    }
 }

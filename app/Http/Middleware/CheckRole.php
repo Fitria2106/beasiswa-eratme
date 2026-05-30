@@ -15,10 +15,8 @@ class CheckRole
     {
         // Pastikan ada parameter 'string $role' di atas ^
 
-        if ($request->user()->role !== $role) {
-            abort(403, 'Anda tidak memiliki akses ke halaman ini.');
-        }
-
+        if (auth()->check() && auth()->user()->role === $role) {
         return $next($request);
     }
+}
 }

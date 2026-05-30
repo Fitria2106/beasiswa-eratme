@@ -1,121 +1,171 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="id">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>{{ config('app.name', 'Laravel') }}</title>
-
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
-
+    <title>Eramet Beyond Scholarship | E-Report Book</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
-    @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @endif
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .hero-section {
+            background: linear-gradient(135deg, #0d2451 0%, #1a4b8c 100%);
+            color: white;
+            padding: 100px 0 80px 0;
+            border-bottom: 8px solid #198754;
+        }
+        .quote-section {
+            background-color: white;
+            padding: 60px 0;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            margin-top: -40px;
+            position: relative;
+        }
+        .quote-icon {
+            color: #198754;
+            opacity: 0.2;
+            font-size: 4rem;
+            position: absolute;
+            top: 20px;
+            left: 30px;
+        }
+        .step-card {
+            background: white;
+            border: none;
+            border-radius: 15px;
+            transition: transform 0.3s ease;
+        }
+        .step-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+        .step-icon {
+            font-size: 2.5rem;
+            color: #0d2451;
+            margin-bottom: 15px;
+        }
+    </style>
 </head>
-<body class="bg-light">
+<body>
 
-<div class="container-fluid py-4 min-vh-100">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark position-absolute w-100" style="z-index: 10;">
+        <div class="container mt-3">
+            <a class="navbar-brand fw-bold" href="#">
+                <i class="bi bi-mortarboard-fill me-2" style="color: #198754;"></i> ERAMET SCHOLARSHIP
+            </a>
+            <div class="d-flex">
+                @auth
+                    <a href="{{ route('dashboard') }}" class="btn btn-outline-light fw-bold px-4 rounded-pill">Ke Dashboard</a>
+                @else
+                    <a href="{{ route('login') }}" class="btn btn-success fw-bold px-4 rounded-pill me-2">Log in</a>
+                    @if (Route::has('register'))
+                        <a href="{{ route('register') }}" class="btn btn-outline-light fw-bold px-4 rounded-pill">Daftar</a>
+                    @endif
+                @endauth
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section text-center">
+        <div class="container">
+            <h1 class="display-4 fw-bold mb-3">Sistem E-Report Book</h1>
+            <p class="lead mb-5" style="color: #cbd5e1; max-width: 700px; margin: 0 auto;">
+                Platform pelaporan dan pengajuan klaim dana buku bagi mahasiswa penerima manfaat program Eramet Beyond Scholarship.
+            </p>
+            @auth
+                <a href="{{ route('dashboard') }}" class="btn btn-success btn-lg px-5 py-3 fw-bold rounded-pill shadow">
+                    Buka Dashboard <i class="bi bi-arrow-right ms-2"></i>
+                </a>
+            @else
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="{{ route('login') }}" class="btn btn-success btn-lg px-5 py-3 fw-bold rounded-pill shadow">
+                        Masuk ke Sistem <i class="bi bi-box-arrow-in-right ms-2"></i>
+                    </a>
+                    @if (Route::has('register'))
+                        <a href="{{ route('register') }}" class="btn btn-outline-light btn-lg px-5 py-3 fw-bold rounded-pill shadow">
+                            Daftar Akun
+                        </a>
+                    @endif
+                </div>
+            @endauth
+        </div>
+    </section>
+
+    <!-- Quote Section -->
     <div class="container">
-        <div class="row mb-4 align-items-center">
-            <div class="col-md-6 text-center text-md-start">
-                <h3 class="fw-bold text-primary">E-Report Book</h3>
-                <p class="text-muted small">Pusat Pelaporan Eramet Beyond Scholarship</p>
-            </div>
-            <div class="col-md-6 text-md-end text-center mt-3 mt-md-0">
-                @if (Route::has('login'))
-                    @auth
-                        <a href="{{ url('/dashboard') }}" class="btn btn-primary shadow-sm px-4">Buka Dashboard</a>
-                    @else
-                        <a href="{{ route('login') }}" class="btn btn-outline-primary me-2">Masuk</a>
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="btn btn-primary shadow-sm">Daftar Akun</a>
-                        @endif
-                    @endauth
-                @endif
-            </div>
-        </div>
-
-        <hr class="mb-5">
-
-        <div class="row g-4 mb-5">
-            <div class="col-md-4">
-                <div class="card border-0 shadow-sm p-3 border-start border-primary border-5">
-                    <div class="d-flex align-items-center">
-                        <div class="bg-primary bg-opacity-10 p-3 rounded-circle me-3">
-                            <i class="bi bi-journal-text text-primary fs-3"></i>
-                        </div>
-                        <div>
-                            <h6 class="text-muted mb-1 small text-uppercase">Total Laporan</h6>
-                            <h4 class="mb-0 fw-bold">0 Laporan</h4>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card border-0 shadow-sm p-3 border-start border-success border-5">
-                    <div class="d-flex align-items-center">
-                        <div class="bg-success bg-opacity-10 p-3 rounded-circle me-3">
-                            <i class="bi bi-check-circle text-success fs-3"></i>
-                        </div>
-                        <div>
-                            <h6 class="text-muted mb-1 small text-uppercase">Terverifikasi</h6>
-                            <h4 class="mb-0 fw-bold">0 Laporan</h4>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card border-0 shadow-sm p-3 border-start border-warning border-5">
-                    <div class="d-flex align-items-center">
-                        <div class="bg-warning bg-opacity-10 p-3 rounded-circle me-3">
-                            <i class="bi bi-clock-history text-warning fs-3"></i>
-                        </div>
-                        <div>
-                            <h6 class="text-muted mb-1 small text-uppercase">Menunggu</h6>
-                            <h4 class="mb-0 fw-bold">0 Laporan</h4>
-                        </div>
-                    </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="quote-section text-center px-4 px-md-5">
+                    <i class="bi bi-quote quote-icon"></i>
+                    <p class="fs-4 fst-italic text-dark mb-4" style="line-height: 1.6;">
+                        "Pendidikan adalah investasi jangka panjang yang memberi manfaat bagi individu, keluarga, komunitas, dan bangsa. Kami ingin memberi generasi muda di Indonesia Timur kesempatan yang setara untuk meraih impian mereka dan menjadi agen perubahan."
+                    </p>
+                    <h6 class="fw-bold text-uppercase mb-0" style="color: #0d2451;">Nancy Pasaribu</h6>
+                    <span class="text-muted small">Head of Communications, Eramet Indonesia</span>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="row">
-            <div class="col-lg-8">
-                <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-                    <div class="card-header bg-white py-3 border-0 mt-2">
-                        <h5 class="mb-0 fw-bold px-2">Informasi Terbaru</h5>
-                    </div>
-                    <div class="card-body text-center py-5">
-                        <img src="https://illustrations.popsy.co/white/reading-a-book.svg" alt="Empty" style="width: 200px;" class="mb-4">
-                        <h5 class="fw-bold">Selamat Datang di E-Report!</h5>
-                        <p class="text-muted px-lg-5">Silakan login untuk mulai melaporkan pembelian buku atau kebutuhan pendidikan lainnya selama masa beasiswa.</p>
-                    </div>
-                </div>
+    <!-- Steps Section -->
+    <section class="py-5 mt-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h3 class="fw-bold text-dark">Alur Pengajuan Laporan Buku</h3>
+                <p class="text-muted">Proses klaim dana pendidikan yang transparan dan mudah dipantau.</p>
             </div>
             
-            <div class="col-lg-4 mt-4 mt-lg-0">
-                <div class="card border-0 shadow-sm bg-primary text-white p-4 rounded-4 h-100">
-                    <h5 class="fw-bold mb-3">Panduan Singkat</h5>
-                    <p class="small opacity-75">1. Daftar akun menggunakan email aktif.<br>2. Login ke sistem dashboard.<br>3. Unggah foto struk belanja buku.<br>4. Tunggu verifikasi admin.</p>
-                    <hr class="border-light opacity-50">
-                    <div class="small">
-                        <p class="mb-2"><i class="bi bi-info-circle me-2"></i> Periode: 2026</p>
-                        <p class="mb-0"><i class="bi bi-geo-alt me-2"></i> Indonesia Timur</p>
+            <div class="row g-4 text-center">
+                <!-- Step 1 -->
+                <div class="col-md-4">
+                    <div class="card step-card h-100 p-4 shadow-sm">
+                        <div class="step-icon"><i class="bi bi-book"></i></div>
+                        <h5 class="fw-bold">1. Input Laporan</h5>
+                        <p class="text-muted small mb-0">Mahasiswa memasukkan detail buku yang dibeli dan mengunggah foto nota bukti pembelian.</p>
+                    </div>
+                </div>
+                <!-- Step 2 -->
+                <div class="col-md-4">
+                    <div class="card step-card h-100 p-4 shadow-sm">
+                        <div class="step-icon"><i class="bi bi-shield-check"></i></div>
+                        <h5 class="fw-bold">2. Verifikasi Admin</h5>
+                        <p class="text-muted small mb-0">Tim verifikator Eramet akan memeriksa kesesuaian nota dan memvalidasi batas anggaran.</p>
+                    </div>
+                </div>
+                <!-- Step 3 -->
+                <div class="col-md-4">
+                    <div class="card step-card h-100 p-4 shadow-sm">
+                        <div class="step-icon"><i class="bi bi-play-circle"></i></div>
+                        <h5 class="fw-bold">3. Unggah Review</h5>
+                        <p class="text-muted small mb-0">Setelah disetujui, mahasiswa mengunggah tautan video review buku ke media sosial.</p>
                     </div>
                 </div>
             </div>
         </div>
-        
-        <footer class="mt-5 text-center py-4 text-muted">
-            <small>&copy; 2026 Eramet Beyond Scholarship. Develop by Fitria Yosefina R.W.</small>
-        </footer>
-    </div>
-</div>
+    </section>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Footer -->
+    <footer class="text-center py-4 text-muted small">
+        <div class="container">
+            &copy; 2026 Eramet Beyond Scholarship | Sistem Pelaporan Dana Pendidikan
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

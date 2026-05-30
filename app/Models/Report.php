@@ -22,7 +22,9 @@ class Report extends Model
         'foto_nota',
         'foto_barang',
         'status',
-        'alasan_penolakan'
+        'alasan_penolakan',
+        'video_link',       // <-- Tambahkan ini
+        'hashtag_proof'
     ];
 
         public function user()

@@ -15,6 +15,13 @@ class ReportController extends Controller
     {
         return view('mahasiswa.upload');
     }
+    // =========================================================================
+    // MODIFIKASI UNTUK UKK (Uji Kompetensi Keahlian)
+    // Di dalam fungsi store() ini terdapat penerapan untuk kriteria:
+    // [CL 181] & [CL 182] : Tipe Data dan Variabel
+    // [CL 183] : Konstanta
+    // [CL 184] : Algoritma / Logika if-else
+    // =========================================================================
     // 1. Simpan Laporan Baru (Mahasiswa)
     public function store(Request $request)
     {
@@ -32,17 +39,37 @@ class ReportController extends Controller
         $pathNota = $request->file('foto_nota')->store('notas', 'public');
         $pathBarang = $request->file('foto_barang')->store('barangs', 'public');
 
+        // [CL 183] Definisikan Konstanta yang Diperlukan (Batas Maksimal Harga)
+        if (!defined('MAX_BUDGET')) {
+            define("MAX_BUDGET", 500000);
+        }
+
+        // [CL 182] & [CL 181] Tentukan Variabel dan Tipe Data yang Dibutuhkan
+        $hargaBarang = (int) $request->harga;          // Tipe Data: Integer
+        $namaItem = (string) $request->nama_item;      // Tipe Data: String
+        $keterangan = (string) $request->keterangan;   // Tipe Data: String
+        $statusLaporan = (string) 'pending';           // Tipe Data: String
+
+        // [CL 184] Pilih Metode / Algoritma yang Tepat (Logika Validasi Harga)
+        // Menggunakan algoritma percabangan (if-else) untuk menentukan persetujuan
+        if ($hargaBarang > MAX_BUDGET) {
+            $statusLaporan = 'rejected';
+            $keterangan = $keterangan . ' (Ditolak oleh sistem: Harga melebihi Rp 500.000)';
+        } else {
+            $statusLaporan = 'pending';
+        }
+
         Report::create([
             'user_id'       => Auth::id(),
             'jenis_laporan' => $request->jenis_laporan,
             'semester'      => $request->semester,
-            'nama_item'     => $request->nama_item,
+            'nama_item'     => $namaItem,              // [CL 182] Menggunakan variabel
             'ringkasan_buku'=> $request->ringkasan_buku, 
-            'keterangan'    => $request->keterangan,
-            'harga'         => $request->harga,
+            'keterangan'    => $keterangan,            // [CL 184] Hasil dari algoritma
+            'harga'         => $hargaBarang,           // [CL 181] Variabel Integer
             'foto_nota'     => $pathNota,
             'foto_barang'   => $pathBarang,
-            'status'        => 'pending',
+            'status'        => $statusLaporan,         // [CL 184] Hasil dari algoritma
         ]);
 
         return redirect()->route('mahasiswa.dashboard')->with('success', 'Laporan Berhasil Dikirim!');
@@ -97,6 +124,37 @@ class ReportController extends Controller
         $report->delete();
 
         return redirect()->back()->with('success', 'Laporan berhasil dihapus oleh Admin.');
+    }
+
+    // 5. Menampilkan Form Upload Review Khusus (Standalone)
+    public function showReviewUploadForm()
+    {
+        $reports = Report::where('user_id', Auth::id())->get(); // Bisa difilter khusus yang disetujui
+        return view('mahasiswa.upload_review', compact('reports'));
+    }
+
+    // 6. Menyimpan Data Review dari Form Standalone
+    public function storeReview(Request $request)
+    {
+        $request->validate([
+            'report_id'     => 'required|exists:reports,id',
+            'video_link'    => 'required|url',
+            // File gambar untuk screenshot tag
+            'hashtag_proof' => 'required|file|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        $report = Report::where('id', $request->report_id)
+                        ->where('user_id', Auth::id())
+                        ->firstOrFail();
+
+        $pathProof = $request->file('hashtag_proof')->store('proofs', 'public');
+
+        $report->update([
+            'video_link'    => $request->video_link,
+            'hashtag_proof' => $pathProof,
+        ]);
+
+        return redirect()->route('mahasiswa.dashboard')->with('success', 'Link Review Video dan Bukti Tag berhasil diupload!');
     }
 
     public function cetak_pdf()

@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Report; // Pastikan Model Report sudah di-import
+use App\Models\Report; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\User;
-
+use Illuminate\Support\Facades\Hash;
 
 class DashboardController extends Controller
 {
-    // --- FUNGSI UNTUK MAHASISWA (YANG TADI ERROR) ---
+    // --- FUNGSI UNTUK MAHASISWA ---
     public function mahasiswa()
     {
         // Mengambil laporan khusus milik mahasiswa yang sedang login
@@ -22,38 +22,36 @@ class DashboardController extends Controller
     }
 
     // --- FUNGSI UNTUK ADMIN ---
-    // app\Http\Controllers\DashboardController.php
+    public function admin()
+    {
+        // 1. Mengambil data reports untuk tabel
+        $allReports = \App\Models\Report::with('user')->orderBy('created_at', 'desc')->get();
 
-public function admin()
-{
-    // 1. Mengambil data reports untuk tabel
-    $allReports = \App\Models\Report::with('user')->orderBy('created_at', 'desc')->get();
+        // 2. Menghitung statistik untuk kotak info
+        $totalMahasiswa = User::where('role', 'mahasiswa')->count();
+        $totalItem = $allReports->count();
+        
+        // 3. Tambahkan totalMahasiswa dan totalItem ke dalam compact
+        return view('admin.dashboard', compact('allReports', 'totalMahasiswa', 'totalItem'));
+    }
 
-    // 2. Menghitung statistik untuk kotak info
-    $totalMahasiswa = User::where('role', 'mahasiswa')->count();
-    $totalItem = $allReports->count();
-    
-    // 3. Tambahkan totalMahasiswa dan totalItem ke dalam compact
-    return view('admin.dashboard', compact('allReports', 'totalMahasiswa', 'totalItem'));
-}
+    // --- FUNGSI CETAK PDF ADMIN ---
+    public function cetak_pdf()
+    {
+        // 1. Ambil data dari database dan simpan di variabel $allReports
+        $allReports = \App\Models\Report::with('user')
+            ->where('status', 'disetujui')
+            ->get();
 
-    // Tambahkan fungsi ini di dalam DashboardController kamu
-    
- public function cetak_pdf()
-{
-    // 1. Ambil data dari database dan simpan di variabel $allReports
-    $allReports = \App\Models\Report::with('user')
-        ->where('status', 'disetujui')
-        ->get();
+        // 2. Kirim variabel $allReports ke dalam view menggunakan compact()
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.laporan_pdf', compact('allReports'));
 
-    // 2. Kirim variabel $allReports ke dalam view menggunakan compact()
-    // PASTIKAN tulisan di dalam compact sama persis dengan nama variabel di atas (tanpa $)
-    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.laporan_pdf', compact('allReports'));
+        // 3. Download file
+        return $pdf->download('laporan-keuangan-eratme.pdf');
+    }
 
-    // 3. Download file
-    return $pdf->download('laporan-keuangan-eratme.pdf');
-}
-   public function updateStatus(Request $request, $id)
+    // --- FUNGSI UPDATE STATUS OLEH ADMIN ---
+    public function updateStatus(Request $request, $id)
     {
         $report = \App\Models\Report::findOrFail($id);
         
@@ -67,5 +65,76 @@ public function admin()
         ]);
     
         return redirect()->back()->with('success', 'Status laporan berhasil diperbarui!');
+    }
+
+    // --- FUNGSI UPDATE REVIEW OLEH MAHASISWA (FITUR BARU) ---
+    public function updateReview(Request $request, $id)
+    {
+        // 1. Validasi: Pastikan input adalah URL yang valid
+        $request->validate([
+            'video_link' => 'required|url',
+            'hashtag_proof' => 'required|url',
+        ], [
+            'video_link.url' => 'Format link video tidak valid.',
+            'hashtag_proof.url' => 'Format link bukti hashtag tidak valid.'
+        ]);
+
+        // 2. Cari data laporan milik mahasiswa yang sedang login
+        $report = \App\Models\Report::where('id', $id)
+                    ->where('user_id', auth()->id())
+                    ->firstOrFail();
+
+        // 3. Simpan link ke database
+        $report->update([
+            'video_link' => $request->video_link,
+            'hashtag_proof' => $request->hashtag_proof,
+        ]);
+
+        // 4. Kembali ke dashboard dengan notifikasi sukses
+        return redirect()->back()->with('success', 'Review buku berhasil diperbarui!');
+    }
+
+    // --- FUNGSI RESET PASSWORD MAHASISWA OLEH ADMIN ---
+    public function resetPassword($id)
+    {
+        $user = User::findOrFail($id);
+        
+        if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'superadmin') {
+            abort(403);
+        }
+
+        $user->update([
+            'password' => \Illuminate\Support\Facades\Hash::make('eramet2026')
+        ]);
+
+        return redirect()->back()->with('success', 'Password mahasiswa berhasil di-reset menjadi "eramet2026"!');
+    }
+
+        // 1. Fungsi menampilkan halaman form
+    public function createMahasiswa()
+    {
+        return view('admin.mahasiswa.create');
+    }
+    // 2. Fungsi memproses dan menyimpan ke database
+    public function storeMahasiswa(Request $request)
+    {
+        // Validasi data yang diinput admin
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'nim' => 'required|string|max:50|unique:users',
+            'jurusan' => 'required|string|max:100',
+            'password' => 'required|string|min:8', // Minimal 8 karakter
+        ]);
+        // Simpan akun baru ke tabel users
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'nim' => $request->nim,
+            'jurusan' => $request->jurusan,
+            'role' => 'mahasiswa', // Otomatis jadikan mahasiswa
+            'password' => Hash::make($request->password), // Enkripsi password
+        ]);
+        return redirect()->route('admin.dashboard')->with('success', 'Akun Mahasiswa berhasil ditambahkan!');
     }
 }

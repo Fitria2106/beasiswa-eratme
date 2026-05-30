@@ -1,128 +1,139 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Sistem Pelaporan Beasiswa Eramet">
+    <meta name="author" content="Fitria">
+
     <title>Pendaftaran Mahasiswa | E-Report Beasiswa Eratme</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Custom fonts for this template-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/css/sb-admin-2.min.css" rel="stylesheet">
+    
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+
     <style>
-        body {
-            background-color: #f0f2f5;
-            font-family: 'Inter', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .bg-register-image {
+            background: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1000&auto=format&fit=crop') center;
+            background-size: cover;
         }
-
-        .register-wrapper {
-            width: 100%;
-            max-width: 900px;
-            padding: 20px;
-        }
-
-        .card-register {
-            border: none;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
-        }
-
-        .form-control-lg {
-            padding: 1rem 1.25rem;
-            font-size: 1.05rem;
-            border-radius: 12px;
-        }
-
-        .section-title {
-            font-size: 0.85rem;
-            letter-spacing: 0.5px;
+        /* Penyesuaian agar mirip dengan SB Admin 2 */
+        .ts-control {
+            border-radius: 10rem;
+            padding: 0.8rem 1rem;
+            font-size: 0.8rem;
+            border: 1px solid #d1d3e2;
         }
     </style>
 </head>
-<body>
 
-    <div class="register-wrapper">
-        <div class="text-center mb-4">
-            <h2 class="fw-bold text-primary">Pendaftaran Mahasiswa</h2>
-            <p class="text-muted mb-0">Lengkapi data di bawah ini untuk akses E-Report Beasiswa</p>
-        </div>
+<body class="bg-gradient-primary">
 
-        <div class="card card-register">
-            <div class="card-body p-4 p-md-5">
-                <form method="POST" action="{{ route('register') }}">
-                    @csrf
+    <div class="container">
 
-                    <div class="mb-4">
-                        <h6 class="text-primary fw-bold mb-3 border-bottom pb-2 text-uppercase section-title">
-                            <i class="bi bi-person-fill me-2"></i>Identitas Personal
-                        </h6>
-                        <div class="mb-3">
-                            <label for="name" class="form-label fw-semibold small">Nama Lengkap</label>
-                            <input id="name" class="form-control form-control-lg @error('name') is-invalid @enderror" type="text" name="name" value="{{ old('name') }}" required autofocus placeholder="Masukkan nama lengkap Anda">
-                            <x-input-error :messages="$errors->get('name')" class="mt-1 text-danger small" />
-                        </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label fw-semibold small">Alamat Email Aktif</label>
-                            <input id="email" class="form-control form-control-lg @error('email') is-invalid @enderror" type="email" name="email" value="{{ old('email') }}" required placeholder="contoh: fitria@student.ac.id">
-                            <x-input-error :messages="$errors->get('email')" class="mt-1 text-danger small" />
-                        </div>
-                    </div>
-
-                    <div class="mb-4">
-                        <h6 class="text-primary fw-bold mb-3 border-bottom pb-2 text-uppercase section-title">
-                            <i class="bi bi-mortarboard-fill me-2"></i>Informasi Kampus
-                        </h6>
-                        <div class="mb-3">
-                            <label for="nim" class="form-label fw-semibold small">NIM (Nomor Induk Mahasiswa)</label>
-                            <input id="nim" class="form-control form-control-lg @error('nim') is-invalid @enderror" type="text" name="nim" value="{{ old('nim') }}" required placeholder="Masukkan NIM resmi Anda">
-                            <x-input-error :messages="$errors->get('nim')" class="mt-1 text-danger small" />
-                        </div>
-                        <div class="mb-3">
-                            <label for="kampus" class="form-label fw-semibold small">Nama Perguruan Tinggi</label>
-                            <input id="kampus" class="form-control form-control-lg" type="text" name="kampus" value="{{ old('kampus') }}" required placeholder="Contoh: Universitas Technology Digital Indonesia">
-                        </div>
-                        <div class="mb-3">
-                            <label for="jurusan" class="form-label fw-semibold small">Program Studi / Jurusan</label>
-                            <input id="jurusan" class="form-control form-control-lg" type="text" name="jurusan" value="{{ old('jurusan') }}" required placeholder="Contoh: S1 Informatika">
-                        </div>
-                    </div>
-
-                    <div class="mb-4">
-                        <h6 class="text-primary fw-bold mb-3 border-bottom pb-2 text-uppercase section-title">
-                            <i class="bi bi-shield-lock-fill me-2"></i>Keamanan Akun
-                        </h6>
-                        <div class="mb-3">
-                            <label for="password" class="form-label fw-semibold small">Password Baru</label>
-                            <input id="password" class="form-control form-control-lg @error('password') is-invalid @enderror" type="password" name="password" required autocomplete="new-password" placeholder="Buat password yang kuat">
-                            <div class="form-text mt-2 text-muted" style="font-size: 0.75rem;">
-                                <i class="bi bi-info-circle me-1"></i>
-                                Petunjuk: Minimal <strong>8 karakter</strong>, gunakan kombinasi <strong>huruf besar, huruf kecil, angka,</strong> dan <strong>simbol</strong>.
+        <div class="card o-hidden border-0 shadow-lg my-5">
+            <div class="card-body p-0">
+                <!-- Nested Row within Card Body -->
+                <div class="row">
+                    <div class="col-lg-5 d-none d-lg-block bg-register-image"></div>
+                    <div class="col-lg-7">
+                        <div class="p-5">
+                            <div class="text-center">
+                                <h1 class="h4 text-gray-900 mb-4">Buat Akun Baru!</h1>
+                                <p class="mb-4 text-muted">Lengkapi data di bawah ini untuk akses E-Report Beasiswa</p>
                             </div>
-                            <x-input-error :messages="$errors->get('password')" class="mt-1 text-danger small" />
-                        </div>
-                        <div class="mb-3">
-                            <label for="password_confirmation" class="form-label fw-semibold small">Konfirmasi Password</label>
-                            <input id="password_confirmation" class="form-control form-control-lg" type="password" name="password_confirmation" required placeholder="Ulangi password untuk verifikasi">
-                        </div>
-                    </div>
+                            <form class="user" method="POST" action="{{ route('register') }}">
+                                @csrf
+                                
+                                <h6 class="text-primary font-weight-bold mb-3 border-bottom pb-2">
+                                    <i class="fas fa-user mr-2"></i>Identitas Personal
+                                </h6>
+                                <div class="form-group row">
+                                    <div class="col-sm-6 mb-3 mb-sm-0">
+                                        <input type="text" class="form-control form-control-user @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" placeholder="Nama Lengkap" required autofocus>
+                                        <x-input-error :messages="$errors->get('name')" class="mt-1 text-danger small" />
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <input type="email" class="form-control form-control-user @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email') }}" placeholder="Alamat Email Aktif" required>
+                                        <x-input-error :messages="$errors->get('email')" class="mt-1 text-danger small" />
+                                    </div>
+                                </div>
 
-                    <div class="d-grid gap-2 mt-4">
-                        <button type="submit" class="btn btn-primary btn-lg rounded-3 shadow-sm py-3 fw-bold text-uppercase" style="letter-spacing: 1px;">
-                            Daftar Akun Sekarang
-                        </button>
-                        <div class="text-center mt-3">
-                            <span class="text-muted small">Sudah punya akun?</span>
-                            <a class="text-decoration-none small fw-bold text-primary ms-1" href="{{ route('login') }}">Masuk di sini</a>
+                                <h6 class="text-primary font-weight-bold mb-3 border-bottom pb-2 mt-4">
+                                    <i class="fas fa-graduation-cap mr-2"></i>Informasi Kampus
+                                </h6>
+                                <div class="form-group">
+                                    <input type="text" class="form-control form-control-user @error('nim') is-invalid @enderror" id="nim" name="nim" value="{{ old('nim') }}" placeholder="NIM (Nomor Induk Mahasiswa)" required>
+                                    <x-input-error :messages="$errors->get('nim')" class="mt-1 text-danger small" />
+                                </div>
+                                <div class="form-group">
+                                    <select id="campus" name="campus" placeholder="Pilih atau Ketik Nama Perguruan Tinggi..." required></select>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control form-control-user" id="jurusan" name="jurusan" value="{{ old('jurusan') }}" placeholder="Program Studi / Jurusan (Contoh: S1 Informatika)" required>
+                                </div>
+
+                                <h6 class="text-primary font-weight-bold mb-3 border-bottom pb-2 mt-4">
+                                    <i class="fas fa-lock mr-2"></i>Keamanan Akun
+                                </h6>
+                                <div class="form-group row">
+                                    <div class="col-sm-6 mb-3 mb-sm-0">
+                                        <input type="password" class="form-control form-control-user @error('password') is-invalid @enderror" id="password" name="password" placeholder="Password" required>
+                                        <x-input-error :messages="$errors->get('password')" class="mt-1 text-danger small" />
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <input type="password" class="form-control form-control-user" id="password_confirmation" name="password_confirmation" placeholder="Ulangi Password" required>
+                                    </div>
+                                </div>
+                                <div class="text-muted small mb-4 px-2">
+                                    <i class="fas fa-info-circle mr-1"></i> Minimal <strong>8 karakter</strong>, gunakan kombinasi <strong>huruf besar, huruf kecil, angka,</strong> dan <strong>simbol</strong>.
+                                </div>
+
+                                <button type="submit" class="btn btn-primary btn-user btn-block font-weight-bold">
+                                    Daftar Akun Sekarang
+                                </button>
+                            </form>
+                            <hr>
+                            <div class="text-center">
+                                <a class="small" href="{{ route('login') }}">Sudah punya akun? Masuk di sini!</a>
+                            </div>
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
 
-        <p class="text-center mt-4 text-muted small">&copy; 2026 E-Report Eramet Beyond Scholarship | </p>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap core JavaScript-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.4/js/sb-admin-2.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (document.getElementById('campus')) {
+                new TomSelect("#campus", {
+                    create: true,
+                    sortField: {
+                        field: "text",
+                        direction: "asc"
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>

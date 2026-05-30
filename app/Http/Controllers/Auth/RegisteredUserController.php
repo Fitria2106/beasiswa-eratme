@@ -28,30 +28,34 @@ class RegisteredUserController extends Controller
      *
      * @throws ValidationException
      */
-    public function store(Request $request): RedirectResponse
+  public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-           'nim' => ['required', 'string', 'max:20', 'unique:users'],
+            'nim' => ['required', 'string', 'max:20', 'unique:users'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'kampus' => ['required', 'string', 'max:255'],
+            'campus' => ['required', 'string', 'max:255'], // validasi input dari form
             'jurusan' => ['required', 'string', 'max:255'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-            $user = User::create([
+        // Cari kampus di database atau buat baru jika belum ada
+        $campus = \App\Models\Campus::firstOrCreate(['name' => $request->campus]);
+
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'mahasiswa', // WAJIB ADA INI
+            'role' => 'mahasiswa', 
             'nim' => $request->nim,
-            'kampus' => $request->kampus,
+            'campus_id' => $campus->id,
             'jurusan' => $request->jurusan,
         ]);
+        
         event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect(route('dashboard'));
     }
 }

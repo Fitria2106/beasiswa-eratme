@@ -21,13 +21,21 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'nim',
-        'kampus',
+        'campus_id', // Jika di database nama kolomnya campus_id
+        'kampus',    // TAMBAHKAN INI jika di database nama kolomnya 'kampus' (sesuai Controller Anda)
         'jurusan',
         'email',
         'password',
         'role',
-
     ];
+
+    /**
+     * Hubungan relasi ke model Campus
+     */
+    public function campus()
+    {
+        return $this->belongsTo(Campus::class, 'campus_id');
+    }
 
     /**
      * The attributes that should be hidden for serialization.
@@ -51,4 +59,4 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-}
+} // Kurung kurawal penutup class harus berada di PALING BAWAH
