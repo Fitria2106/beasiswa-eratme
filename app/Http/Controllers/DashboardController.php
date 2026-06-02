@@ -70,13 +70,15 @@ class DashboardController extends Controller
     // --- FUNGSI UPDATE REVIEW OLEH MAHASISWA (FITUR BARU) ---
     public function updateReview(Request $request, $id)
     {
-        // 1. Validasi: Pastikan input adalah URL yang valid
+        // 1. Validasi: Pastikan input video adalah URL dan bukti tag adalah gambar
         $request->validate([
             'video_link' => 'required|url',
-            'hashtag_proof' => 'required|url',
+            'hashtag_proof' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ], [
             'video_link.url' => 'Format link video tidak valid.',
-            'hashtag_proof.url' => 'Format link bukti hashtag tidak valid.'
+            'hashtag_proof.image' => 'Bukti tag harus berupa gambar.',
+            'hashtag_proof.mimes' => 'Format gambar harus jpeg, png, atau jpg.',
+            'hashtag_proof.max' => 'Ukuran gambar maksimal 2MB.'
         ]);
 
         // 2. Cari data laporan milik mahasiswa yang sedang login
@@ -84,14 +86,24 @@ class DashboardController extends Controller
                     ->where('user_id', auth()->id())
                     ->firstOrFail();
 
-        // 3. Simpan link ke database
-        $report->update([
+        // 3. Upload gambar bukti tag ke storage
+        $dataToUpdate = [
             'video_link' => $request->video_link,
-            'hashtag_proof' => $request->hashtag_proof,
-        ]);
+        ];
+        
+        if ($request->hasFile('hashtag_proof')) {
+            // (Opsional) Hapus file lama jika ada dan bukan URL
+            if ($report->hashtag_proof && !\Illuminate\Support\Str::startsWith($report->hashtag_proof, ['http://', 'https://'])) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($report->hashtag_proof);
+            }
+            $dataToUpdate['hashtag_proof'] = $request->file('hashtag_proof')->store('proofs', 'public');
+        }
 
-        // 4. Kembali ke dashboard dengan notifikasi sukses
-        return redirect()->back()->with('success', 'Review buku berhasil diperbarui!');
+        // 4. Simpan ke database
+        $report->update($dataToUpdate);
+
+        // 5. Kembali ke dashboard dengan notifikasi sukses
+        return redirect()->back()->with('success', 'Review buku dan bukti tag berhasil diperbarui!');
     }
 
     // --- FUNGSI RESET PASSWORD MAHASISWA OLEH ADMIN ---
