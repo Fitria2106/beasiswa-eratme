@@ -65,7 +65,7 @@
                     <div class="col-md-6">
                         <p class="mb-2 text-muted small font-weight-bold">Bukti Tag Sosmed</p>
                         @if($report->hashtag_proof)
-                            @if(Str::startsWith($report->hashtag_proof, ['http://', 'https://']))
+                            @if(\Illuminate\Support\Str::startsWith($report->hashtag_proof, ['http://', 'https://']))
                                 <a href="{{ $report->hashtag_proof }}" target="_blank" class="btn btn-sm btn-outline-info mb-3">
                                     <i class="fas fa-external-link-alt"></i> Lihat Bukti Tag
                                 </a>
